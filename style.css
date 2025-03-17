@@ -68,9 +68,15 @@ footer {
     padding-left: 20px;
 }
 
+.project-container {
+    max-width: 800px; /* Restrict width for better readability */
+    margin: 0 auto;
+    text-align: left;
+}
+
 .project-image {
-    width: 80%;
-    max-width: 600px;
+    width: 100%;
+    max-width: 500px; /* Reduce size for better fit */
     display: block;
     margin: 20px auto;
     border: 2px solid #7cc4b0;
@@ -90,3 +96,4 @@ footer {
 .button:hover {
     background-color: #5aa193;
 }
+
