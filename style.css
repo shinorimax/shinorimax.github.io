@@ -55,8 +55,8 @@ footer {
 }
 
 .profile-pic {
-    width: 120px; /* Smaller image size */
-    height: 120px;
+    width: 200px; /* Smaller image size */
+    height: 200px;
     border-radius: 50%;
     object-fit: cover;
     border: 3px solid #7cc4b0;
