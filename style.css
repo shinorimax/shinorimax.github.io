@@ -67,3 +67,26 @@ footer {
     text-align: left;
     padding-left: 20px;
 }
+
+.project-image {
+    width: 80%;
+    max-width: 600px;
+    display: block;
+    margin: 20px auto;
+    border: 2px solid #7cc4b0;
+    border-radius: 10px;
+}
+
+.button {
+    display: inline-block;
+    padding: 10px 15px;
+    background-color: #7cc4b0;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.button:hover {
+    background-color: #5aa193;
+}
