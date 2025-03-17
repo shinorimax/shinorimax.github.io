@@ -76,9 +76,9 @@ footer {
 
 .project-image {
     width: 100%;
-    max-width: 700px; /* Reduce size for better fit */
+    max-width: 800px; /* Reduce size for better fit */
     display: block;
-    margin: 20px auto;
+    margin: 0px auto;
     border: 1px solid #000000;
     border-radius: 10px;
 }
