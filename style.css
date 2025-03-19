@@ -101,12 +101,12 @@ footer {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 15px;
+    gap: 10px;
 }
 
 .gallery-item {
     text-align: center;
-    max-width: 250px;
+    max-width: 375px;
 }
 
 .gallery-item img {
