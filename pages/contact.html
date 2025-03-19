@@ -40,10 +40,10 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             border-radius: 10px;
         }
-        ul {
+        .contact-list {
             padding: 0;
         }
-        li {
+        .contact-list li {
             list-style: none;
             margin: 15px 0;
             padding: 10px;
@@ -53,17 +53,17 @@
             align-items: center;
             transition: transform 0.2s, box-shadow 0.2s;
         }
-        li:hover {
+        .contact-list li:hover {
             transform: translateY(-5px);
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
-        li a {
+        .contact-list li a {
             text-decoration: none;
             color: #2c786c;
             margin-left: 10px;
             font-size: 18px;
         }
-        li a:hover {
+        .contact-list li a:hover {
             text-decoration: underline;
         }
         i {
@@ -82,7 +82,7 @@
     <header>
         <h1>Contact Me</h1>
         <nav>
-            <ul>
+            <ul class="nav-list">
                 <li><a href="../index.html">Home</a></li>
                 <li><a href="projects.html">Projects</a></li>
                 <li><a href="contact.html">Contact</a></li>
@@ -93,7 +93,7 @@
     <section>
         <h2>Get in Touch</h2>
         <p>Feel free to reach out through any of the following:</p>
-        <ul>
+        <ul class="contact-list">
             <li><i class="fas fa-envelope"></i><a href="mailto:syagi2@stanford.edu">syagi2@stanford.edu</a></li>
             <li><i class="fab fa-github"></i><a href="https://github.com/shinorimax">github.com/shinorimax</a></li>
             <li><i class="fab fa-linkedin"></i><a href="https://www.linkedin.com/in/shinnosuke-yagi-1a2914230/">linkedin.com/in/shinnosuke-yagi</a></li>

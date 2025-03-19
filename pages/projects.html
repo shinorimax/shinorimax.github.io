@@ -13,26 +13,33 @@
             text-align: center;
         }
         header {
-            background-color: #7cc4b0;
-            padding: 20px;
+            background-color: #008080; /* Teal */
+            padding: 40px 0;
+            width: 100%; /* Ensures the header spans the full width */
         }
         h1 {
             color: white;
+            margin: 0;
         }
         nav ul {
             list-style: none;
             padding: 0;
+            margin: 10px 0 0 0;
+            display: flex;
+            justify-content: center;
         }
-
         nav ul li {
-            display: inline;
             margin: 0 15px;
         }
-
         nav ul li a {
             color: white;
             text-decoration: none;
+            font-weight: bold;
         }
+        nav ul li a:hover {
+            text-decoration: underline;
+        }
+
         section {
             max-width: 800px;
             margin: 40px auto;
@@ -41,30 +48,33 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             border-radius: 10px;
         }
-        ul {
+        
+        /* Project List Specific Styling */
+        .project-list {
             padding: 0;
-        }
-        li {
+        } 
+        .project-list li {
             list-style: none;
             margin: 15px 0;
             padding: 10px;
-            background-color: #eefaf5;
+            background-color: #f0f4f8; /* Light blue-gray */
             border-radius: 8px;
             transition: transform 0.2s, box-shadow 0.2s;
-        }
-        li:hover {
+        } 
+        .project-list li:hover {
             transform: translateY(-5px);
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        }
-        h3 a {
+        } 
+        .project-list h3 a {
             text-decoration: none;
-            color: #2c786c;
+            color: #004d4d; /* Dark teal */
         }
-        h3 a:hover {
+        .project-list h3 a:hover {
             text-decoration: underline;
         }
+        
         footer {
-            background-color: #333;
+            background-color: #004d4d; /* Dark teal */
             color: white;
             padding: 10px;
             margin-top: 40px;
@@ -75,7 +85,7 @@
     <header>
         <h1>My Projects</h1>
         <nav>
-            <ul>
+            <ul class="nav-list">
                 <li><a href="../index.html">Home</a></li>
                 <li><a href="projects.html">Projects</a></li>
                 <li><a href="contact.html">Contact</a></li>
@@ -86,7 +96,7 @@
     <section>
         <h2>Featured Projects</h2>
         <p>Here are some of the projects I've worked on:</p>
-        <ul>
+        <ul class="project-list">
             <li>
                 <h3><a href="cs229_project.html">CS 229 Project</a></h3>
                 <p>Neural Network and Genetic Algorithm to maximize signal significance in particle physics</p>
