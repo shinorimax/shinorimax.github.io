@@ -40,13 +40,25 @@
             text-decoration: underline;
         }
 
-        section {
-            max-width: 800px;
+        .container {
+            display: flex;
+            justify-content: space-between;
+            max-width: 1200px;
             margin: 40px auto;
-            padding: 20px;
+            gap: 20px;
+        }
+
+        .section-box {
+            flex: 1;
             background-color: white;
+            padding: 20px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             border-radius: 10px;
+            min-height: 300px;
+        }
+
+        h2 {
+            text-align: center;
         }
         
         /* Project List Specific Styling */
@@ -93,24 +105,48 @@
         </nav>
     </header>
 
-    <section>
-        <h2>Featured Projects</h2>
-        <p>Here are some of the projects I've worked on:</p>
-        <ul class="project-list">
-            <li>
-                <h3><a href="cs229_project.html">CS 229 Project</a></h3>
-                <p>Neural Network and Genetic Algorithm to maximize signal significance in particle physics</p>
-            </li>            
-            <li>
-                <h3><a href="geophys190_project.html">GEOPHYS 190 Project</a></h3>
-                <p>Researching optimal location for groundwater recharge in Kings Subbasin, California</p>
-            </li>
-            <li>
-                <h3><a href="stats100_project.html">STATS 100 Project</a></h3>
-                <p>The Case for Batting Average: Measuring Offensive Consistency in Terms of Hit Frequency</p>
-            </li>
-        </ul>
-    </section>
+    <div class="container">
+        <section class="section-box">
+            <h2>Research</h2>
+            <ul class="project-list">
+                <li>
+                    <h3><a href="phylogenetic.html">Research at Palacios Lab</a></h3>
+                    <p>Distance metric for phylogenetic trees to detect selection</p>
+                </li>            
+                <li>
+                    <h3><a href="wildfire.html">Big Earth Hackathon Wildfire Challenge</a></h3>
+                    <p>Random Forest to detect post-wildfire landslides</p>
+                </li>
+                <li>
+                    <h3><a href="sociology.html">Research at Sociology Dept.</a></h3>
+                    <p>Democracy index and economic document analysis</p>
+                </li>
+            </ul>
+        </section>
+        
+        <section class="section-box">
+            <h2>Featured Projects</h2>
+            <ul class="project-list">
+                <li>
+                    <h3><a href="cs229_project.html">CS 229 Project</a></h3>
+                    <p>Neural Network and Genetic Algorithm to maximize signal significance in particle physics</p>
+                </li>            
+                <li>
+                    <h3><a href="geophys190_project.html">GEOPHYS 190 Project</a></h3>
+                    <p>Researching optimal location for groundwater recharge in Kings Subbasin, California</p>
+                </li>
+                <li>
+                    <h3><a href="stats100_project.html">STATS 100 Project</a></h3>
+                    <p>The Case for Batting Average: Measuring Offensive Consistency in Terms of Hit Frequency</p>
+                </li>
+            </ul>
+        </section>
+
+        <section class="section-box">
+            <h2>Work Experience</h2>
+            <p>Content coming soon...</p>
+        </section>
+    </div>
 
     <footer>
         <p>&copy; 2025 Shinnosuke Yagi</p>
