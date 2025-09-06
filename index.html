@@ -156,14 +156,19 @@
         #about .image-container{
             text-align:center;
         }
+        /* Prevent profile photo distortion */
         #about .image-container img{
             width: 150px;
-            aspect-ratio: 1;
+            height: 150px;            /* lock height to match width */
+            object-fit: cover;        /* crop to fill, no stretching */
+            object-position: center;  /* keep your face centered */
             border-radius: 50%;
             box-shadow: 0 4px 18px rgba(0,0,0,.12);
             outline: 4px solid rgba(255,255,255,.65);
             transition: transform .25s ease, box-shadow .25s ease;
+            image-orientation: from-image; /* respects camera EXIF rotation */
         }
+
         #about .image-container img:hover{
             transform: translateY(-2px);
             box-shadow: 0 10px 28px rgba(0,0,0,.16);
