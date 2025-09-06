@@ -185,13 +185,13 @@
 
     <p>To make these abstract differences more tangible, here are two examples: one pitch called a strike by the umpire and also by rulebook but a ball under ABS, and another where ABS would call a strike while the umpire / rulebook call ball. Both pitches will be judged differently under ABS due to the new definition of vertical width.</p>
 
-    <p style="text-align:center"><img src="https://github.com/shinorimax/Baseball_Research/blob/main/docs/figures/figure3.png?raw=true" alt="Figure 3. ABS-relative mistake type by location (by matchup)." width="1000" /><br /><em>Figure 3. ABS-relative mistake type by location (by matchup).</em></p>
+    <p style="text-align:center"><img src="https://github.com/shinorimax/Baseball_Research/blob/main/docs/figures/figure3.png?raw=true" alt="Figure 3. ABS-relative mistake type by location (by matchup)." width="600" /><br /><em>Figure 3. ABS-relative mistake type by location (by matchup).</em></p>
 
     <p>The matchup-based heatmaps <em>Figure 3</em> reveal that in same-handed matchups (L vs L or R vs R), where pitchers traditionally attack the outside corner, many of those borderline corner pitches fall inside the ABS strike zone and are therefore more likely to be taken strikes. This suggests that pitchers with precise command to the outer edge may become even more effective under ABS. Another notable finding emerges in the left-handed batter vs right-handed pitcher matchup, where the outer-high corner sees a distinct cluster of pitches judged as strikes by ABS but not consistently called as such under the current system. This effect is much less pronounced in the other three matchup types, pointing to a potential asymmetry in how ABS could reshape pitcher–hitter dynamics depending on handedness.</p>
 
-    <p style="text-align:center"><img src="https://github.com/shinorimax/Baseball_Research/blob/main/docs/figures/figure4.png?raw=true" alt="Figure 4. ABS-relative mistake type by pitch type." width="1000" /><br /><em>Figure 4. ABS-relative mistake type by pitch type.</em></p>
+    <p style="text-align:center"><img src="https://github.com/shinorimax/Baseball_Research/blob/main/docs/figures/figure4.png?raw=true" alt="Figure 4. ABS-relative mistake type by pitch type." width="600" /><br /><em>Figure 4. ABS-relative mistake type by pitch type.</em></p>
 
-    <p style="text-align:center"><img src="https://github.com/shinorimax/Baseball_Research/blob/main/docs/figures/figure5.png?raw=true" alt="Figure 5. ABS-relative mistake type by height bin." width="1000" /><br /><em>Figure 5. ABS-relative mistake type by height bin.</em></p>
+    <p style="text-align:center"><img src="https://github.com/shinorimax/Baseball_Research/blob/main/docs/figures/figure5.png?raw=true" alt="Figure 5. ABS-relative mistake type by height bin." width="600" /><br /><em>Figure 5. ABS-relative mistake type by height bin.</em></p>
 
     <p>The heatmaps—whether broken down by pitch type <em>(Figure 4)</em> or by hitter-height bins <em>(Figure 5)</em>—show no meaningful shift in the location or direction of ABS disagreements. This suggests that the apparent “shorter-hitter advantage” seen in the confusion matrix is not driven by pitchers attacking different locations or by umpires favoring particular regions, but by ABS’s vertically compressed zone: shorter hitters simply have more borderline pitches at the top / bottom of the zone classified as balls under ABS.</p>
 
@@ -199,21 +199,21 @@
 
     <p>Among hitters with at least 300 judged pitches, we identify the <strong>top and bottom 20 players who benefit or suffer most from ABS</strong> across two different measures. The first measure, <em>mean_abs_benefit_vs_ump</em>, is a <strong>per-pitch average</strong> of ABS benefit scores, where each pitch is scored +1 if ABS overturns a strike into a ball (hitter-friendly), −1 if ABS overturns a ball into a strike (pitcher-friendly), and 0 if there is agreement. The second measure, <em>sum_per_pa_abs_benefit_vs_ump</em>, normalizes the cumulative per-pitch benefit by the number of plate appearances, providing a <strong>per-PA perspective</strong> on how much the strike zone shifts outcomes for each hitter.</p>
 
-    <p style="text-align:center"><img src="https://github.com/shinorimax/Baseball_Research/blob/main/docs/figures/table3.png?raw=true" alt="Table 3. Top 20 hitters with ABS Benefit per judged pitch." width="1000" /><br /><em>Table 3. Top 20 hitters with ABS Benefit per judged pitch.</em></p>
+    <p style="text-align:center"><img src="https://github.com/shinorimax/Baseball_Research/blob/main/docs/figures/table3.png?raw=true" alt="Table 3. Top 20 hitters with ABS Benefit per judged pitch." width="600" /><br /><em>Table 3. Top 20 hitters with ABS Benefit per judged pitch.</em></p>
 
-    <p style="text-align:center"><img src="https://github.com/shinorimax/Baseball_Research/blob/main/docs/figures/table4.png?raw=true" alt="Table 4. Bottom 20 hitters with ABS Benefit per judged pitch." width="1000" /><br /><em>Table 4. Bottom 20 hitters with ABS Benefit per judged pitch.</em></p>
+    <p style="text-align:center"><img src="https://github.com/shinorimax/Baseball_Research/blob/main/docs/figures/table4.png?raw=true" alt="Table 4. Bottom 20 hitters with ABS Benefit per judged pitch." width="600" /><br /><em>Table 4. Bottom 20 hitters with ABS Benefit per judged pitch.</em></p>
 
     <p>The tables show that some hitters consistently gain more leniency from ABS than others. Interestingly, which side of the plate they stand appears to play a role: while <strong>16 of the top-20 most benefited hitters hit on the right side, only 2 of the bottom-20 most disadvantaged hitters do</strong>. This suggests that the static ABS zone may tilt toward right-handed hitters when compared to human umpire calls.</p>
 
-    <p style="text-align:center"><img src="https://github.com/shinorimax/Baseball_Research/blob/main/docs/figures/figure6.png?raw=true" alt="Figure 6. ABS Benefit by Batter Height and Handedness." width="1000" /><br /><em>Figure 6. ABS Benefit by Batter Height and Handedness.</em></p>
+    <p style="text-align:center"><img src="https://github.com/shinorimax/Baseball_Research/blob/main/docs/figures/figure6.png?raw=true" alt="Figure 6. ABS Benefit by Batter Height and Handedness." width="600" /><br /><em>Figure 6. ABS Benefit by Batter Height and Handedness.</em></p>
 
     <p><em>Figure 6</em> shows the relationship between hitter height and ABS benefit per pitch, with points colored by handedness. The plot suggests that right-handed hitters (red) generally gain more from ABS calls than left-handed hitters (blue), a difference confirmed by a two-sample t-test (t = –5.93, p = 7.92e–09). The regression lines further indicate that shorter hitters, regardless of handedness, tend to receive greater benefits under ABS, confirming the trend we saw in <em>Table 4</em>.</p>
 
-    <p style="text-align:center"><img src="https://github.com/shinorimax/Baseball_Research/blob/main/docs/figures/table5.png?raw=true" alt="Table 5. Top 20 pitchers with ABS Benefit per judged pitch." width="1000" /><br /><em>Table 5. Top 20 pitchers with ABS Benefit per judged pitch.</em></p>
+    <p style="text-align:center"><img src="https://github.com/shinorimax/Baseball_Research/blob/main/docs/figures/table5.png?raw=true" alt="Table 5. Top 20 pitchers with ABS Benefit per judged pitch." width="600" /><br /><em>Table 5. Top 20 pitchers with ABS Benefit per judged pitch.</em></p>
 
-    <p style="text-align:center"><img src="https://github.com/shinorimax/Baseball_Research/blob/main/docs/figures/table6.png?raw=true" alt="Table 6. Bottom 20 pitchers with ABS Benefit per judged pitch." width="1000" /><br /><em>Table 6. Bottom 20 pitchers with ABS Benefit per judged pitch.</em></p>
+    <p style="text-align:center"><img src="https://github.com/shinorimax/Baseball_Research/blob/main/docs/figures/table6.png?raw=true" alt="Table 6. Bottom 20 pitchers with ABS Benefit per judged pitch." width="600" /><br /><em>Table 6. Bottom 20 pitchers with ABS Benefit per judged pitch.</em></p>
 
-    <p style="text-align:center"><img src="https://github.com/shinorimax/Baseball_Research/blob/main/docs/figures/figure6.png?raw=true" alt="Figure 7. ABS Benefit by Pitcher Height and Handedness." width="1000" /><br /><em>Figure 7. ABS Benefit by Pitcher Height and Handedness.</em></p>
+    <p style="text-align:center"><img src="https://github.com/shinorimax/Baseball_Research/blob/main/docs/figures/figure6.png?raw=true" alt="Figure 7. ABS Benefit by Pitcher Height and Handedness." width="600" /><br /><em>Figure 7. ABS Benefit by Pitcher Height and Handedness.</em></p>
 
     <p>By definition, lower values of ABS benefit are better for pitchers. In contrast to hitters, we do not observe any noticeable trend regarding pitcher handedness or height from our data.</p>
 
