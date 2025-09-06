@@ -267,11 +267,15 @@
 
     <p>In this analysis, we compare two versions of the strike zone: the <strong>rulebook zone</strong> (or the "statcast zone"), which serves as the current ground truth, and the <strong>ABS zone</strong>, which represents the new ground truth under the automated system.</p>
 
-    <p style="text-align:center">
-      <img src="https://github.com/shinorimax/Baseball_Research/blob/main/docs/figures/zone_comparison.png?raw=true" alt="Comparison of Rulebook vs. ABS Zone" width="400" />
-      <br />
+    <div class="media">
+      <img
+        src="https://github.com/shinorimax/Baseball_Research/blob/main/docs/figures/zone_comparison.png?raw=true"
+        alt="Comparison of Rulebook vs. ABS Zone"
+        width="400"
+      />
       <em>Figure 1. Comparison of typical rulebook strike zone (blue) and the ABS strike zone (red) for a 6'3&quot; hitter.</em>
-    </p>
+    </div>
+    
 
     <p>The <strong>rulebook zone</strong> is based on <strong>Baseball Savant’s Statcast data</strong>, which records per-pitch measurements such as <code>sz_top</code> and <code>sz_bot</code>—the top and bottom of a batter’s zone as determined during the game. Horizontally, the strike zone extends 0.85 feet to either side of home plate’s center. To capture the true geometry of the zone, we also account for the ball’s radius, rounding the four corners with quarter-circle arcs rather than using a sharp rectangle.</p>
 
