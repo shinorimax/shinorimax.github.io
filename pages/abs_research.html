@@ -1,28 +1,243 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ABS vs. Rulebook — What Robo‑Umps Would Say in 2025 | Shinnosuke Yagi</title>
-  <link rel="stylesheet" href="../style.css">
-  <meta name="description" content="Simulating a counterfactual 2025 where every taken pitch is adjudicated by MLB’s ABS. How would calls change relative to umpires and the rulebook zone?">
-  <meta property="og:title" content="ABS vs. Rulebook — What Robo‑Umps Would Say in 2025">
-  <meta property="og:description" content="Confusion matrices, heatmaps, and player rankings for how ABS would reshape balls and strikes.">
-  <meta property="og:type" content="article">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ABS vs. Rulebook — What Robo-Umps Would Say in 2025 | Shinnosuke Yagi</title>
+  <link rel="stylesheet" href="../style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&display=swap" rel="stylesheet" />
+  <meta name="description" content="Simulating a counterfactual 2025 where every taken pitch is adjudicated by MLB’s ABS. How would calls change relative to umpires and the rulebook zone?" />
+  <meta property="og:title" content="ABS vs. Rulebook — What Robo-Umps Would Say in 2025" />
+  <meta property="og:description" content="Confusion matrices, heatmaps, and player rankings for how ABS would reshape balls and strikes." />
+  <meta property="og:type" content="article" />
+
+  <style>
+    /* ---------- Design Tokens (shared) ---------- */
+    :root{
+      --bg: #f3f6f8;
+      --card-bg:#ffffff;
+      --text:#1f2937;
+      --muted:#6b7280;
+      --primary:#0b8f8f;
+      --primary-600:#0a7e7e;
+      --primary-700:#086c6c;
+      --ring: rgba(11,143,143,.35);
+      --shadow-sm: 0 2px 10px rgba(0,0,0,.06);
+      --shadow-md: 0 10px 30px rgba(0,0,0,.08);
+      --radius: 14px;
+      --radius-lg: 18px;
+      --container: 1100px;
+      --table-border: rgba(0,0,0,.12);
+      --table-stripe: rgba(0,0,0,.035);
+    }
+    @media (prefers-color-scheme: dark){
+      :root{
+        --bg: #0b1214;
+        --card-bg:#0f171a;
+        --text:#e5e7eb;
+        --muted:#9aa3ad;
+        --primary:#31c1c1;
+        --primary-600:#24b2b2;
+        --primary-700:#1aa3a3;
+        --ring: rgba(49,193,193,.45);
+        --shadow-sm: 0 2px 10px rgba(0,0,0,.35);
+        --shadow-md: 0 10px 30px rgba(0,0,0,.45);
+        --table-border: rgba(255,255,255,.16);
+        --table-stripe: rgba(255,255,255,.04);
+      }
+    }
+
+    /* ---------- Base ---------- */
+    html { scroll-behavior: smooth; }
+    *, *::before, *::after { box-sizing: border-box; }
+    body{
+      margin:0;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
+      line-height:1.65;
+      color:var(--text);
+      background:
+        radial-gradient(1200px 600px at 20% -10%, rgba(11,143,143,.10), transparent 60%),
+        radial-gradient(900px 500px at 110% 10%, rgba(11,143,143,.08), transparent 55%),
+        var(--bg);
+    }
+    img, video{ max-width:100%; height:auto; display:block; }
+    a{
+      color:var(--primary-700);
+      text-decoration:none;
+      transition: color .2s ease, opacity .2s ease;
+    }
+    a:hover{ color:var(--primary); }
+    a:focus-visible{
+      outline: 3px solid var(--ring);
+      outline-offset: 2px;
+      border-radius: 6px;
+    }
+    code, kbd, samp{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+      font-size: .95em;
+      background: rgba(0,0,0,.06);
+      padding: .1em .35em;
+      border-radius: 6px;
+    }
+    @media (prefers-color-scheme: dark){
+      code, kbd, samp{ background: rgba(255,255,255,.08); }
+    }
+
+    .wrap{
+      max-width: var(--container);
+      margin-inline:auto;
+      padding-inline: 20px;
+    }
+
+    /* ---------- Header / Nav ---------- */
+    header{
+      background: linear-gradient(135deg, var(--primary-700), var(--primary));
+      color:#fff;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      box-shadow: var(--shadow-sm);
+    }
+    header .wrap{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 16px;
+      padding-block: 24px;
+    }
+    header h1{
+      margin:0;
+      font-size: clamp(1.05rem, 1.4vw + .9rem, 1.35rem);
+      font-weight: 800;
+      letter-spacing:.3px;
+      line-height:1.25;
+    }
+    nav ul{
+      margin:0;
+      padding:0;
+      list-style:none;
+      display:flex;
+      gap:22px;
+    }
+    nav ul li a{
+      color:#fff;
+      font-weight:600;
+      letter-spacing:.2px;
+      position:relative;
+      padding: 6px 2px;
+    }
+    nav ul li a::after{
+      content:"";
+      position:absolute;
+      left:0; bottom:-6px;
+      width:0%; height:2px;
+      background:#fff;
+      border-radius:2px;
+      transition: width .25s ease;
+      opacity:.9;
+    }
+    nav ul li a:hover::after,
+    nav ul li a:focus-visible::after{ width:100%; }
+
+    /* ---------- Article Card ---------- */
+    .project-container{
+      background: var(--card-bg);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+      margin: 28px auto 40px;
+      padding: clamp(20px, 3vw, 32px);
+      max-width: 900px;
+    }
+    .project-container h2{
+      margin-top: 1rem;
+      font-size: clamp(1.25rem, 1.2vw + 1rem, 1.6rem);
+      letter-spacing:.3px;
+    }
+    .project-container h3{
+      margin-top: 1.25rem;
+      font-size: clamp(1.05rem, 1vw + .85rem, 1.25rem);
+    }
+    .project-container p{ color: var(--text); }
+    .project-container p em{ color: var(--muted); }
+
+    /* ---------- Media / Figures ---------- */
+    .media{
+      max-width: 900px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .media img, .media video{
+      border-radius: 12px;
+      box-shadow: var(--shadow-md);
+    }
+    .media em{
+      display:block;
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: .95rem;
+    }
+
+    /* ---------- Tables ---------- */
+    .table-wrap{
+      max-width: 900px;
+      margin: 0 auto;
+      overflow-x: auto;
+      border-radius: 12px;
+      box-shadow: var(--shadow-sm);
+    }
+    .table-wrap table{
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+      background: var(--card-bg);
+    }
+    .table-wrap th, .table-wrap td{
+      border: 1px solid var(--table-border);
+      padding: 8px 10px;
+      text-align: right;
+      white-space: nowrap;
+    }
+    .table-wrap th:first-child,
+    .table-wrap td:first-child{
+      text-align: left;
+    }
+    .table-wrap tbody tr:nth-child(odd){
+      background: var(--table-stripe);
+    }
+
+    /* ---------- Footer ---------- */
+    footer{
+      background: linear-gradient(180deg, var(--primary-700), var(--primary));
+      color:#eef8f8;
+      text-align:center;
+      padding: 18px;
+      border-top-left-radius: var(--radius);
+      border-top-right-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
+      margin-top: 40px;
+    }
+    footer p{ margin:0; font-size: .95rem; letter-spacing:.2px; }
+
+    @media (prefers-reduced-motion: reduce){
+      *{ transition: none !important; }
+    }
+  </style>
 </head>
 <body>
   <header>
-    <h1>ABS vs. Rulebook — What Robo‑Umps Would Say in 2025</h1>
-    <nav>
-      <ul>
-        <li><a href="../index.html">Home</a></li>
-        <li><a href="projects.html">Projects</a></li>
-        <li><a href="contact.html">Contact</a></li>
-      </ul>
-    </nav>
+    <div class="wrap">
+      <h1>ABS vs. Rulebook — What Robo-Umps Would Say in 2025</h1>
+      <nav>
+        <ul>
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="projects.html">Projects</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
   </header>
 
-  <div class="project-container">
+  <div class="project-container wrap">
     <!-- ARTICLE START -->
     <h2>Introduction</h2>
 
@@ -54,35 +269,24 @@
 
     <h3>Confusion Matrices: ABS vs. Umpires and Rulebook Zone</h3>
 
-    <div style="max-width: 900px;margin: 0 auto;text-align: center">
-
-      <img src="https://github.com/shinorimax/Baseball_Research/blob/main/docs/figures/table1.png?raw=true" alt="Confusion matrices comparing Ump vs ABS and Rulebook vs ABS (all pitches)" style="max-width:100%;height:auto" />
-
-      <p style="margin-top:10px">
-        <em>Table 1. Confusion matrices comparing Ump vs ABS and Rulebook vs ABS.</em>
-      </p>
-
+    <div class="media">
+      <img src="https://github.com/shinorimax/Baseball_Research/blob/main/docs/figures/table1.png?raw=true" alt="Confusion matrices comparing Ump vs ABS and Rulebook vs ABS (all pitches)" />
+      <em>Table 1. Confusion matrices comparing Ump vs ABS and Rulebook vs ABS.</em>
     </div>
 
     <p>A confusion matrix summarizes how often two systems disagree on classification—in this case, whether a pitch is a strike or a ball—with columns representing the current system (umpire or rulebook) and rows representing the ABS “ground truth.” Looking across all pitches from March 27 to August 16, 2025, the ABS system appears notably hitter-friendly: it was much more likely to reclassify an umpire-called strike as a ball (16,836 cases) than to reclassify an umpire-called ball as a strike (8,536 cases). In other words, nearly twice as many umpire strikes were downgraded to balls by ABS as the reverse. This pattern is even starker relative to the rulebook zone, where a rulebook strike would be called a ball (10,804 cases) roughly three times as often as a rulebook ball would be called a strike (3,218 cases).</p>
 
-    <div style="max-width: 900px;margin: 0 auto;text-align: center">
-
-      <img src="https://github.com/shinorimax/Baseball_Research/blob/main/docs/figures/table2.png?raw=true" alt="Confusion matrices comparing Ump vs ABS by matchup type" style="max-width:100%;height:auto" />
-
-      <p style="margin-top:10px">
-        <em>Table 2. Confusion matrices comparing Ump vs ABS by matchup type.</em>
-      </p>
-
+    <div class="media">
+      <img src="https://github.com/shinorimax/Baseball_Research/blob/main/docs/figures/table2.png?raw=true" alt="Confusion matrices comparing Ump vs ABS by matchup type" />
+      <em>Table 2. Confusion matrices comparing Ump vs ABS by matchup type.</em>
     </div>
 
     <p>
       Matchup splits in <em>Table 2</em> highlight asymmetries: lefty-lefty games see relatively balanced disagreements (1,220 ump-strikes &rarr; balls vs. 923 ump-balls &rarr; strikes), meaning pitchers are not heavily penalized. In contrast, righty hitter-lefty pitcher games show far more umpire strikes turning into ABS balls (3,362) than the reverse (1,448), favoring hitters over a 2-to-1 margin.
     </p>
 
-    <div style="max-width: 900px;margin: 0 auto;text-align: center">
-
-      <table border="1" cellpadding="4" cellspacing="0" style="width: 100%;border-collapse: collapse;font-size: 14px;margin: 0 auto">
+    <div class="table-wrap">
+      <table>
         <tr>
           <th>Pitch Type</th>
           <th>All Pitches</th>
@@ -112,20 +316,15 @@
           <td align="right">1.65</td>
         </tr>
       </table>
-
-      <p style="margin-top:10px">
-        <em>Table 3. Ratio of ABS-strike-Ump-balls to ABS-balls-Ump-strikes by pitch type.</em>
-      </p>
-
     </div>
+    <p style="text-align:center; margin-top:10px;"><em>Table 3. Ratio of ABS-strike-Ump-balls to ABS-balls-Ump-strikes by pitch type.</em></p>
 
     <p>
       <em>Table 3</em> shows, for each pitch type, the ratio of umpire over-calls (ABS ball judged as a strike) to under-calls (ABS strike judged as a ball). We omitted pitch types with fewer than 300 judged pitches to ensure reliability. Cutters (FC) stand out with the highest ratio (2.55), suggesting they are disproportionately over-called relative to ABS. Perhaps the subtle movement with high velocity from these pitches is deceptive to human eyes.
     </p>
 
-    <div style="max-width: 900px;margin: 0 auto;text-align: center">
-
-      <table border="1" cellpadding="4" cellspacing="0" style="width: 100%;border-collapse: collapse;font-size: 14px;margin: 0 auto">
+    <div class="table-wrap">
+      <table>
         <tr>
           <th>Height Bin</th>
           <th>66–68</th>
@@ -149,12 +348,8 @@
           <td align="center">–</td>
         </tr>
       </table>
-
-      <p style="margin-top:10px">
-        <em>Table 4. Ratio of ABS-strike-Ump-balls to ABS-balls-Ump-strikes by height bins.</em>
-      </p>
-
     </div>
+    <p style="text-align:center; margin-top:10px;"><em>Table 4. Ratio of ABS-strike-Ump-balls to ABS-balls-Ump-strikes by height bins.</em></p>
 
     <p> The core distinction between ABS and the rulebook zone is that ABS is static, while the rulebook zone adjusts vertically to a hitter’s stance. Our height-bin analysis (<em>Table 4</em>) shows this effect: hitter height meaningfully affects the pattern of disagreements with umpires. For shorter hitters (e.g., 66–70 inches tall), the ratio of hitter-friendly disagreements (umpire calls strike, ABS says ball) to pitcher-friendly disagreements (umpire calls ball, ABS says strike) is above 2:1, indicating that ABS systematically grants them more leniency than umpires. As height increases, however, this ratio steadily declines toward parity (&asymp;1.6:1 for hitters 78–80 inches), suggesting that taller hitters benefit less from this hitter-friendly tilt. In other words, compared with human umpires, ABS appears to favor shorter hitters more. The full confusion matrices for each pitch type and height bin can be found in this <a href="https://github.com/shinorimax/Baseball_Research/blob/main/notebooks/main.ipynb">code</a>. </p>
 
@@ -162,36 +357,47 @@
 
     <p>As <em>Figure 1</em> above shows, the ABS zone is <strong>vertically narrower</strong> than the current rulebook (Statcast) strike zone. This difference means that several pitches near the very top and bottom edges would be treated differently under ABS. In the following heatmaps, we highlight exactly where these discrepancies occur by comparing umpire calls and the rulebook zone to the ABS definition. Areas shaded green indicate pitches that ABS would call a ball but the former system (umps / rulebook) judged a strike, while red shows the reverse. This lets us see, location by location, how the shape of the zone changes the outcome of real pitches.</p>
 
-    <p style="text-align:center"><img src="https://github.com/shinorimax/Baseball_Research/blob/main/docs/figures/figure2.png?raw=true" alt="Figure 2. ABS-relative mistake type by location (signed density, zoomed)." width="600" /><br /><em>Figure 2. ABS-relative mistake type by location (signed density, zoomed).</em></p>
+    <div class="media">
+      <img src="https://github.com/shinorimax/Baseball_Research/blob/main/docs/figures/figure2.png?raw=true" alt="Figure 2. ABS-relative mistake type by location (signed density, zoomed)." />
+      <em>Figure 2. ABS-relative mistake type by location (signed density, zoomed).</em>
+    </div>
 
     <p><em>Figure 2</em> reveals clear patterns in how the ABS strike zone shifts pitch outcomes compared to both umpires and the Statcast rulebook zone. Because the ABS zone is vertically narrower, pitches at the very top of the current rulebook zone are far more likely to be called balls. At the same time, ABS is stricter about the corners at the bottom of the zone</strong>: pitches that just clip the edges there are called strikes more often than by umpires or the rulebook definition. When comparing directly to the rulebook zone, we again see more balls at the top, while the bottom edge produces disagreements in both directions—some pitches becoming strikes under ABS, others shifting to balls. This two-sided disagreement at the bottom likely stems from the fact that the rulebook zone adjusts to each batter’s stance on a given pitch, while the ABS zone is tied to a fixed percentage of listed height, making it more static and sometimes misaligned with how a player actually sets up in the box.</p>
 
-    <div style="text-align:center">
-      <div style="margin-bottom:20px">
-        <video controls width="600" preload="metadata">
-          <source src="https://github.com/shinorimax/Baseball_Research/raw/refs/heads/main/docs/figures/STRIKE_BECOMES_BALL.mp4" type="video/mp4">
-          Your browser does not support the video tag.
-        </video>
-        <h4>Umpire / Rulebook Strike → ABS Ball</h4>
-      </div>
-      <div>
-        <video controls width="600" preload="metadata">
-          <source src="https://github.com/shinorimax/Baseball_Research/raw/refs/heads/main/docs/figures/BALL_BECOMES_STRIKE.mp4" type="video/mp4">
-          Your browser does not support the video tag.
-        </video>
-        <h4>Umpire / Rulebook Ball → ABS Strike</h4>
-      </div>
+    <div class="media">
+      <video controls preload="metadata">
+        <source src="https://github.com/shinorimax/Baseball_Research/raw/refs/heads/main/docs/figures/STRIKE_BECOMES_BALL.mp4" type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+      <em>Umpire / Rulebook Strike → ABS Ball</em>
+    </div>
+
+    <div class="media" style="margin-top:20px">
+      <video controls preload="metadata">
+        <source src="https://github.com/shinorimax/Baseball_Research/raw/refs/heads/main/docs/figures/BALL_BECOMES_STRIKE.mp4" type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+      <em>Umpire / Rulebook Ball → ABS Strike</em>
     </div>
 
     <p>To make these abstract differences more tangible, here are two examples: one pitch called a strike by the umpire and also by rulebook but a ball under ABS, and another where ABS would call a strike while the umpire / rulebook call ball. Both pitches will be judged differently under ABS due to the new definition of vertical width.</p>
 
-    <p style="text-align:center"><img src="https://github.com/shinorimax/Baseball_Research/blob/main/docs/figures/figure3.png?raw=true" alt="Figure 3. ABS-relative mistake type by location (by matchup)." width="600" /><br /><em>Figure 3. ABS-relative mistake type by location (by matchup).</em></p>
+    <div class="media">
+      <img src="https://github.com/shinorimax/Baseball_Research/blob/main/docs/figures/figure3.png?raw=true" alt="Figure 3. ABS-relative mistake type by location (by matchup)." />
+      <em>Figure 3. ABS-relative mistake type by location (by matchup).</em>
+    </div>
 
     <p>The matchup-based heatmaps <em>Figure 3</em> reveal that in same-handed matchups (L vs L or R vs R), where pitchers traditionally attack the outside corner, many of those borderline corner pitches fall inside the ABS strike zone and are therefore more likely to be taken strikes. This suggests that pitchers with precise command to the outer edge may become even more effective under ABS. Another notable finding emerges in the left-handed batter vs right-handed pitcher matchup, where the outer-high corner sees a distinct cluster of pitches judged as strikes by ABS but not consistently called as such under the current system. This effect is much less pronounced in the other three matchup types, pointing to a potential asymmetry in how ABS could reshape pitcher–hitter dynamics depending on handedness.</p>
 
-    <p style="text-align:center"><img src="https://github.com/shinorimax/Baseball_Research/blob/main/docs/figures/figure4.png?raw=true" alt="Figure 4. ABS-relative mistake type by pitch type." width="600" /><br /><em>Figure 4. ABS-relative mistake type by pitch type.</em></p>
+    <div class="media">
+      <img src="https://github.com/shinorimax/Baseball_Research/blob/main/docs/figures/figure4.png?raw=true" alt="Figure 4. ABS-relative mistake type by pitch type." />
+      <em>Figure 4. ABS-relative mistake type by pitch type.</em>
+    </div>
 
-    <p style="text-align:center"><img src="https://github.com/shinorimax/Baseball_Research/blob/main/docs/figures/figure5.png?raw=true" alt="Figure 5. ABS-relative mistake type by height bin." width="600" /><br /><em>Figure 5. ABS-relative mistake type by height bin.</em></p>
+    <div class="media">
+      <img src="https://github.com/shinorimax/Baseball_Research/blob/main/docs/figures/figure5.png?raw=true" alt="Figure 5. ABS-relative mistake type by height bin." />
+      <em>Figure 5. ABS-relative mistake type by height bin.</em>
+    </div>
 
     <p>The heatmaps—whether broken down by pitch type <em>(Figure 4)</em> or by hitter-height bins <em>(Figure 5)</em>—show no meaningful shift in the location or direction of ABS disagreements. This suggests that the apparent “shorter-hitter advantage” seen in the confusion matrix is not driven by pitchers attacking different locations or by umpires favoring particular regions, but by ABS’s vertically compressed zone: shorter hitters simply have more borderline pitches at the top / bottom of the zone classified as balls under ABS.</p>
 
@@ -199,21 +405,39 @@
 
     <p>Among hitters with at least 300 judged pitches, we identify the <strong>top and bottom 20 players who benefit or suffer most from ABS</strong> across two different measures. The first measure, <em>mean_abs_benefit_vs_ump</em>, is a <strong>per-pitch average</strong> of ABS benefit scores, where each pitch is scored +1 if ABS overturns a strike into a ball (hitter-friendly), −1 if ABS overturns a ball into a strike (pitcher-friendly), and 0 if there is agreement. The second measure, <em>sum_per_pa_abs_benefit_vs_ump</em>, normalizes the cumulative per-pitch benefit by the number of plate appearances, providing a <strong>per-PA perspective</strong> on how much the strike zone shifts outcomes for each hitter.</p>
 
-    <p style="text-align:center"><img src="https://github.com/shinorimax/Baseball_Research/blob/main/docs/figures/table3.png?raw=true" alt="Table 3. Top 20 hitters with ABS Benefit per judged pitch." width="600" /><br /><em>Table 3. Top 20 hitters with ABS Benefit per judged pitch.</em></p>
+    <div class="media">
+      <img src="https://github.com/shinorimax/Baseball_Research/blob/main/docs/figures/table3.png?raw=true" alt="Table 3. Top 20 hitters with ABS Benefit per judged pitch." />
+      <em>Table 3. Top 20 hitters with ABS Benefit per judged pitch.</em>
+    </div>
 
-    <p style="text-align:center"><img src="https://github.com/shinorimax/Baseball_Research/blob/main/docs/figures/table4.png?raw=true" alt="Table 4. Bottom 20 hitters with ABS Benefit per judged pitch." width="600" /><br /><em>Table 4. Bottom 20 hitters with ABS Benefit per judged pitch.</em></p>
+    <div class="media">
+      <img src="https://github.com/shinorimax/Baseball_Research/blob/main/docs/figures/table4.png?raw=true" alt="Table 4. Bottom 20 hitters with ABS Benefit per judged pitch." />
+      <em>Table 4. Bottom 20 hitters with ABS Benefit per judged pitch.</em>
+    </div>
 
     <p>The tables show that some hitters consistently gain more leniency from ABS than others. Interestingly, which side of the plate they stand appears to play a role: while <strong>16 of the top-20 most benefited hitters hit on the right side, only 2 of the bottom-20 most disadvantaged hitters do</strong>. This suggests that the static ABS zone may tilt toward right-handed hitters when compared to human umpire calls.</p>
 
-    <p style="text-align:center"><img src="https://github.com/shinorimax/Baseball_Research/blob/main/docs/figures/figure6.png?raw=true" alt="Figure 6. ABS Benefit by Batter Height and Handedness." width="600" /><br /><em>Figure 6. ABS Benefit by Batter Height and Handedness.</em></p>
+    <div class="media">
+      <img src="https://github.com/shinorimax/Baseball_Research/blob/main/docs/figures/figure6.png?raw=true" alt="Figure 6. ABS Benefit by Batter Height and Handedness." />
+      <em>Figure 6. ABS Benefit by Batter Height and Handedness.</em>
+    </div>
 
     <p><em>Figure 6</em> shows the relationship between hitter height and ABS benefit per pitch, with points colored by handedness. The plot suggests that right-handed hitters (red) generally gain more from ABS calls than left-handed hitters (blue), a difference confirmed by a two-sample t-test (t = –5.93, p = 7.92e–09). The regression lines further indicate that shorter hitters, regardless of handedness, tend to receive greater benefits under ABS, confirming the trend we saw in <em>Table 4</em>.</p>
 
-    <p style="text-align:center"><img src="https://github.com/shinorimax/Baseball_Research/blob/main/docs/figures/table5.png?raw=true" alt="Table 5. Top 20 pitchers with ABS Benefit per judged pitch." width="600" /><br /><em>Table 5. Top 20 pitchers with ABS Benefit per judged pitch.</em></p>
+    <div class="media">
+      <img src="https://github.com/shinorimax/Baseball_Research/blob/main/docs/figures/table5.png?raw=true" alt="Table 5. Top 20 pitchers with ABS Benefit per judged pitch." />
+      <em>Table 5. Top 20 pitchers with ABS Benefit per judged pitch.</em>
+    </div>
 
-    <p style="text-align:center"><img src="https://github.com/shinorimax/Baseball_Research/blob/main/docs/figures/table6.png?raw=true" alt="Table 6. Bottom 20 pitchers with ABS Benefit per judged pitch." width="600" /><br /><em>Table 6. Bottom 20 pitchers with ABS Benefit per judged pitch.</em></p>
+    <div class="media">
+      <img src="https://github.com/shinorimax/Baseball_Research/blob/main/docs/figures/table6.png?raw=true" alt="Table 6. Bottom 20 pitchers with ABS Benefit per judged pitch." />
+      <em>Table 6. Bottom 20 pitchers with ABS Benefit per judged pitch.</em>
+    </div>
 
-    <p style="text-align:center"><img src="https://github.com/shinorimax/Baseball_Research/blob/main/docs/figures/figure6.png?raw=true" alt="Figure 7. ABS Benefit by Pitcher Height and Handedness." width="600" /><br /><em>Figure 7. ABS Benefit by Pitcher Height and Handedness.</em></p>
+    <div class="media">
+      <img src="https://github.com/shinorimax/Baseball_Research/blob/main/docs/figures/figure6.png?raw=true" alt="Figure 7. ABS Benefit by Pitcher Height and Handedness." />
+      <em>Figure 7. ABS Benefit by Pitcher Height and Handedness.</em>
+    </div>
 
     <p>By definition, lower values of ABS benefit are better for pitchers. In contrast to hitters, we do not observe any noticeable trend regarding pitcher handedness or height from our data.</p>
 
