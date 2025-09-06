@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ABS vs. Rulebook — What Robo‑Umps Would Say in 2025 | Shinnosuke Yagi</title>
+  <link rel="stylesheet" href="../style.css">
+  <meta name="description" content="Simulating a counterfactual 2025 where every taken pitch is adjudicated by MLB’s ABS. How would calls change relative to umpires and the rulebook zone?">
+  <meta property="og:title" content="ABS vs. Rulebook — What Robo‑Umps Would Say in 2025">
+  <meta property="og:description" content="Confusion matrices, heatmaps, and player rankings for how ABS would reshape balls and strikes.">
+  <meta property="og:type" content="article">
+</head>
+<body>
+  <header>
+    <h1>ABS vs. Rulebook — What Robo‑Umps Would Say in 2025</h1>
+    <nav>
+      <ul>
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="projects.html">Projects</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <div class="project-container">
+    <!-- ARTICLE START -->
+    <h2>Introduction</h2>
+
+    <p>In 2025, Major League Baseball took its first major step toward the future with the <strong>Automated Ball-Strike (ABS) system</strong>. The defining moment came on the game’s biggest stage&mdash;the All-Star Game&mdash;when Seattle catcher Cal Raleigh successfully challenged a call that was overturned to a strike, resulting in a strikeout of Manny Machado. It was the first time ABS directly altered the outcome of an MLB showcase, with each team allotted just two challenges (<a href="https://www.mlb.com/news/automatic-ball-strike-challenge-system-overturns-ball-call-2025-all-star-game" target="_blank" rel="noopener">MLB.com</a>). The reception remains mixed: in <em>The Athletic</em>’s anonymous player poll from May 2025, 63.4% of players opposed robo-umps calling balls and strikes, 17.1% supported them, and 19.4% were unsure (<a href="https://www.nytimes.com/athletic/6406613/2025/06/11/robo-umpires-mlb-2025-player-poll/" target="_blank" rel="noopener">The Athletic</a>).</p> 
+
+    <p>Despite that hesitation, rumors suggest a league-wide rollout of the challenge system is on track for 2026. If history tells us anything, technology rarely moves backward. Once refined and sped up, ABS may well redefine the fabric of the strike zone for all pitches in MLB.</p> 
+
+    <p>In this study, I simulate a counterfactual 2025 in which every taken pitch is adjudicated by ABS. For each pitch, I compare the ABS verdict with the call that actually occurred, compute a net “ABS benefit,” and identify the pitchers, hitters, and pitch types most helped or hurt by the standardized ABS zone. Through this research, we can begin to understand the trends and strategies that might be prevalent in baseball’s next era. The answers could reveal not just how the game is played, but who thrives and who struggles when the strike zone is standardized under the new definition.</p>
+
+    <h2>Rulebook Zone vs. ABS Zone</h2>
+
+    <p>In this analysis, we compare two versions of the strike zone: the <strong>rulebook zone</strong> (or the "statcast zone"), which serves as the current ground truth, and the <strong>ABS zone</strong>, which represents the new ground truth under the automated system.</p>
+
+    <p style="text-align:center">
+      <img src="https://github.com/shinorimax/Baseball_Research/blob/main/docs/figures/zone_comparison.png?raw=true" alt="Comparison of Rulebook vs. ABS Zone" width="400" />
+      <br />
+      <em>Figure 1. Comparison of typical rulebook strike zone (blue) and the ABS strike zone (red) for a 6'3&quot; hitter.</em>
+    </p>
+
+    <p>The <strong>rulebook zone</strong> is based on <strong>Baseball Savant’s Statcast data</strong>, which records per-pitch measurements such as <code>sz_top</code> and <code>sz_bot</code>—the top and bottom of a batter’s zone as determined during the game. Horizontally, the strike zone extends 0.85 feet to either side of home plate’s center. To capture the true geometry of the zone, we also account for the ball’s radius, rounding the four corners with quarter-circle arcs rather than using a sharp rectangle.</p>
+
+    <p>The <strong>ABS zone</strong>, by contrast, is defined by a fixed formula tied to batter height. The top of the zone is set at <strong>53.5% of a player’s height</strong>, and the bottom at <strong>27%</strong>, while the horizontal boundary and ball-radius adjustment remain the same. By anchoring the zone directly to height, ABS eliminates game-to-game subjectivity, replacing it with a standardized calculation that applies consistently across all players.</p>
+
+    <p>It’s important to emphasize that our replication of these zones is an approximation rather than a perfect reproduction. Statcast’s <code>sz_top</code> and <code>sz_bot</code> values are human-recorded estimates, listed player heights are not always precise, and we are not considering advanced physics such as the depth of home plate, the three-dimensional collision geometry of a pitch with the strike zone, or ball-tracking tolerances. For now, our goal is to approximate both zones as faithfully as possible with existing information—and we welcome suggestions on how to refine or improve the methodology. (Precise implementation is <a href="https://github.com/shinorimax/Baseball_Research/tree/main">here</a>)</p>
+
+    <h2>What Would Robo-umps Say in 2025?</h2>
+
+    <p>Having defined the strike zones and outlined the methodology, the next step is to examine what ABS would have said if it had been calling games in 2025. By comparing ABS verdicts directly against both umpires and the rulebook zone, we can begin to map out where the differences lie&mdash;whether in overall strike/ball tallies, spatial heat maps, or the impact of those calls on pitchers and hitters.</p>
+
+    <h3>Confusion Matrices: ABS vs. Umpires and Rulebook Zone</h3>
+
+    <div style="max-width: 900px;margin: 0 auto;text-align: center">
+
+      <img src="https://github.com/shinorimax/Baseball_Research/blob/main/docs/figures/table1.png?raw=true" alt="Confusion matrices comparing Ump vs ABS and Rulebook vs ABS (all pitches)" style="max-width:100%;height:auto" />
+
+      <p style="margin-top:10px">
+        <em>Table 1. Confusion matrices comparing Ump vs ABS and Rulebook vs ABS.</em>
+      </p>
+
+    </div>
+
+    <p>A confusion matrix summarizes how often two systems disagree on classification—in this case, whether a pitch is a strike or a ball—with columns representing the current system (umpire or rulebook) and rows representing the ABS “ground truth.” Looking across all pitches from March 27 to August 16, 2025, the ABS system appears notably hitter-friendly: it was much more likely to reclassify an umpire-called strike as a ball (16,836 cases) than to reclassify an umpire-called ball as a strike (8,536 cases). In other words, nearly twice as many umpire strikes were downgraded to balls by ABS as the reverse. This pattern is even starker relative to the rulebook zone, where a rulebook strike would be called a ball (10,804 cases) roughly three times as often as a rulebook ball would be called a strike (3,218 cases).</p>
+
+    <div style="max-width: 900px;margin: 0 auto;text-align: center">
+
+      <img src="https://github.com/shinorimax/Baseball_Research/blob/main/docs/figures/table2.png?raw=true" alt="Confusion matrices comparing Ump vs ABS by matchup type" style="max-width:100%;height:auto" />
+
+      <p style="margin-top:10px">
+        <em>Table 2. Confusion matrices comparing Ump vs ABS by matchup type.</em>
+      </p>
+
+    </div>
+
+    <p>
+      Matchup splits in <em>Table 2</em> highlight asymmetries: lefty-lefty games see relatively balanced disagreements (1,220 ump-strikes &rarr; balls vs. 923 ump-balls &rarr; strikes), meaning pitchers are not heavily penalized. In contrast, righty hitter-lefty pitcher games show far more umpire strikes turning into ABS balls (3,362) than the reverse (1,448), favoring hitters over a 2-to-1 margin.
+    </p>
+
+    <div style="max-width: 900px;margin: 0 auto;text-align: center">
+
+      <table border="1" cellpadding="4" cellspacing="0" style="width: 100%;border-collapse: collapse;font-size: 14px;margin: 0 auto">
+        <tr>
+          <th>Pitch Type</th>
+          <th>All Pitches</th>
+          <th>CH</th>
+          <th>CU</th>
+          <th>FC</th>
+          <th>FF</th>
+          <th>FS</th>
+          <th>KC</th>
+          <th>SI</th>
+          <th>SL</th>
+          <th>ST</th>
+          <th>SV</th>
+        </tr>
+        <tr>
+          <td><strong>Ratio (BL/TR)</strong></td>
+          <td align="right">1.97</td>
+          <td align="right">1.70</td>
+          <td align="right">2.13</td>
+          <td align="right">2.55</td>
+          <td align="right">1.91</td>
+          <td align="right">1.21</td>
+          <td align="right">2.15</td>
+          <td align="right">1.94</td>
+          <td align="right">2.10</td>
+          <td align="right">1.86</td>
+          <td align="right">1.65</td>
+        </tr>
+      </table>
+
+      <p style="margin-top:10px">
+        <em>Table 3. Ratio of ABS-strike-Ump-balls to ABS-balls-Ump-strikes by pitch type.</em>
+      </p>
+
+    </div>
+
+    <p>
+      <em>Table 3</em> shows, for each pitch type, the ratio of umpire over-calls (ABS ball judged as a strike) to under-calls (ABS strike judged as a ball). We omitted pitch types with fewer than 300 judged pitches to ensure reliability. Cutters (FC) stand out with the highest ratio (2.55), suggesting they are disproportionately over-called relative to ABS. Perhaps the subtle movement with high velocity from these pitches is deceptive to human eyes.
+    </p>
+
+    <div style="max-width: 900px;margin: 0 auto;text-align: center">
+
+      <table border="1" cellpadding="4" cellspacing="0" style="width: 100%;border-collapse: collapse;font-size: 14px;margin: 0 auto">
+        <tr>
+          <th>Height Bin</th>
+          <th>66–68</th>
+          <th>68–70</th>
+          <th>70–72</th>
+          <th>72–74</th>
+          <th>74–76</th>
+          <th>76–78</th>
+          <th>78–80</th>
+          <th>80–82</th>
+        </tr>
+        <tr>
+          <td><strong>Ratio (BL/TR)</strong></td>
+          <td align="right">2.13</td>
+          <td align="right">2.16</td>
+          <td align="right">2.11</td>
+          <td align="right">1.93</td>
+          <td align="right">1.90</td>
+          <td align="right">1.67</td>
+          <td align="right">1.65</td>
+          <td align="center">–</td>
+        </tr>
+      </table>
+
+      <p style="margin-top:10px">
+        <em>Table 4. Ratio of ABS-strike-Ump-balls to ABS-balls-Ump-strikes by height bins.</em>
+      </p>
+
+    </div>
+
+    <p> The core distinction between ABS and the rulebook zone is that ABS is static, while the rulebook zone adjusts vertically to a hitter’s stance. Our height-bin analysis (<em>Table 4</em>) shows this effect: hitter height meaningfully affects the pattern of disagreements with umpires. For shorter hitters (e.g., 66–70 inches tall), the ratio of hitter-friendly disagreements (umpire calls strike, ABS says ball) to pitcher-friendly disagreements (umpire calls ball, ABS says strike) is above 2:1, indicating that ABS systematically grants them more leniency than umpires. As height increases, however, this ratio steadily declines toward parity (&asymp;1.6:1 for hitters 78–80 inches), suggesting that taller hitters benefit less from this hitter-friendly tilt. In other words, compared with human umpires, ABS appears to favor shorter hitters more. The full confusion matrices for each pitch type and height bin can be found in this <a href="https://github.com/shinorimax/Baseball_Research/blob/main/notebooks/main.ipynb">code</a>. </p>
+
+    <h3>Heatmaps: ABS vs. Umpires and Rulebook Zone</h3>
+
+    <p>As <em>Figure 1</em> above shows, the ABS zone is <strong>vertically narrower</strong> than the current rulebook (Statcast) strike zone. This difference means that several pitches near the very top and bottom edges would be treated differently under ABS. In the following heatmaps, we highlight exactly where these discrepancies occur by comparing umpire calls and the rulebook zone to the ABS definition. Areas shaded green indicate pitches that ABS would call a ball but the former system (umps / rulebook) judged a strike, while red shows the reverse. This lets us see, location by location, how the shape of the zone changes the outcome of real pitches.</p>
+
+    <p style="text-align:center"><img src="https://github.com/shinorimax/Baseball_Research/blob/main/docs/figures/figure2.png?raw=true" alt="Figure 2. ABS-relative mistake type by location (signed density, zoomed)." width="600" /><br /><em>Figure 2. ABS-relative mistake type by location (signed density, zoomed).</em></p>
+
+    <p><em>Figure 2</em> reveals clear patterns in how the ABS strike zone shifts pitch outcomes compared to both umpires and the Statcast rulebook zone. Because the ABS zone is vertically narrower, pitches at the very top of the current rulebook zone are far more likely to be called balls. At the same time, ABS is stricter about the corners at the bottom of the zone</strong>: pitches that just clip the edges there are called strikes more often than by umpires or the rulebook definition. When comparing directly to the rulebook zone, we again see more balls at the top, while the bottom edge produces disagreements in both directions—some pitches becoming strikes under ABS, others shifting to balls. This two-sided disagreement at the bottom likely stems from the fact that the rulebook zone adjusts to each batter’s stance on a given pitch, while the ABS zone is tied to a fixed percentage of listed height, making it more static and sometimes misaligned with how a player actually sets up in the box.</p>
+
+    <div style="text-align:center">
+      <div style="margin-bottom:20px">
+        <h4>Umpire / Rulebook Strike → ABS Ball</h4>
+        <video controls width="600" preload="metadata">
+          <source src="https://github.com/shinorimax/Baseball_Research/raw/refs/heads/main/docs/figures/STRIKE_BECOMES_BALL.mp4" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+      </div>
+      <div>
+        <h4>Umpire / Rulebook Ball → ABS Strike</h4>
+        <video controls width="600" preload="metadata">
+          <source src="https://github.com/shinorimax/Baseball_Research/raw/refs/heads/main/docs/figures/BALL_BECOMES_STRIKE.mp4" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+      </div>
+    </div>
+
+    <p>To make these abstract differences more tangible, here are two examples: one pitch called a strike by the umpire and also by rulebook but a ball under ABS, and another where ABS would call a strike while the umpire / rulebook call ball. Both pitches will be judged differently under ABS due to the new definition of vertical width.</p>
+
+    <p style="text-align:center"><img src="https://github.com/shinorimax/Baseball_Research/blob/main/docs/figures/figure3.png?raw=true" alt="Figure 3. ABS-relative mistake type by location (by matchup)." width="1000" /><br /><em>Figure 3. ABS-relative mistake type by location (by matchup).</em></p>
+
+    <p>The matchup-based heatmaps <em>Figure 3</em> reveal that in same-handed matchups (L vs L or R vs R), where pitchers traditionally attack the outside corner, many of those borderline corner pitches fall inside the ABS strike zone and are therefore more likely to be taken strikes. This suggests that pitchers with precise command to the outer edge may become even more effective under ABS. Another notable finding emerges in the left-handed batter vs right-handed pitcher matchup, where the outer-high corner sees a distinct cluster of pitches judged as strikes by ABS but not consistently called as such under the current system. This effect is much less pronounced in the other three matchup types, pointing to a potential asymmetry in how ABS could reshape pitcher–hitter dynamics depending on handedness.</p>
+
+    <p style="text-align:center"><img src="https://github.com/shinorimax/Baseball_Research/blob/main/docs/figures/figure4.png?raw=true" alt="Figure 4. ABS-relative mistake type by pitch type." width="1000" /><br /><em>Figure 4. ABS-relative mistake type by pitch type.</em></p>
+
+    <p style="text-align:center"><img src="https://github.com/shinorimax/Baseball_Research/blob/main/docs/figures/figure5.png?raw=true" alt="Figure 5. ABS-relative mistake type by height bin." width="1000" /><br /><em>Figure 5. ABS-relative mistake type by height bin.</em></p>
+
+    <p>The heatmaps—whether broken down by pitch type <em>(Figure 4)</em> or by hitter-height bins <em>(Figure 5)</em>—show no meaningful shift in the location or direction of ABS disagreements. This suggests that the apparent “shorter-hitter advantage” seen in the confusion matrix is not driven by pitchers attacking different locations or by umpires favoring particular regions, but by ABS’s vertically compressed zone: shorter hitters simply have more borderline pitches at the top / bottom of the zone classified as balls under ABS.</p>
+
+    <h3>Which Hitters / Pitches Benefit from ABS?</h3>
+
+    <p>Among hitters with at least 300 judged pitches, we identify the <strong>top and bottom 20 players who benefit or suffer most from ABS</strong> across two different measures. The first measure, <em>mean_abs_benefit_vs_ump</em>, is a <strong>per-pitch average</strong> of ABS benefit scores, where each pitch is scored +1 if ABS overturns a strike into a ball (hitter-friendly), −1 if ABS overturns a ball into a strike (pitcher-friendly), and 0 if there is agreement. The second measure, <em>sum_per_pa_abs_benefit_vs_ump</em>, normalizes the cumulative per-pitch benefit by the number of plate appearances, providing a <strong>per-PA perspective</strong> on how much the strike zone shifts outcomes for each hitter.</p>
+
+    <p style="text-align:center"><img src="https://github.com/shinorimax/Baseball_Research/blob/main/docs/figures/table3.png?raw=true" alt="Table 3. Top 20 hitters with ABS Benefit per judged pitch." width="1000" /><br /><em>Table 3. Top 20 hitters with ABS Benefit per judged pitch.</em></p>
+
+    <p style="text-align:center"><img src="https://github.com/shinorimax/Baseball_Research/blob/main/docs/figures/table4.png?raw=true" alt="Table 4. Bottom 20 hitters with ABS Benefit per judged pitch." width="1000" /><br /><em>Table 4. Bottom 20 hitters with ABS Benefit per judged pitch.</em></p>
+
+    <p>The tables show that some hitters consistently gain more leniency from ABS than others. Interestingly, which side of the plate they stand appears to play a role: while <strong>16 of the top-20 most benefited hitters hit on the right side, only 2 of the bottom-20 most disadvantaged hitters do</strong>. This suggests that the static ABS zone may tilt toward right-handed hitters when compared to human umpire calls.</p>
+
+    <p style="text-align:center"><img src="https://github.com/shinorimax/Baseball_Research/blob/main/docs/figures/figure6.png?raw=true" alt="Figure 6. ABS Benefit by Batter Height and Handedness." width="1000" /><br /><em>Figure 6. ABS Benefit by Batter Height and Handedness.</em></p>
+
+    <p><em>Figure 6</em> shows the relationship between hitter height and ABS benefit per pitch, with points colored by handedness. The plot suggests that right-handed hitters (red) generally gain more from ABS calls than left-handed hitters (blue), a difference confirmed by a two-sample t-test (t = –5.93, p = 7.92e–09). The regression lines further indicate that shorter hitters, regardless of handedness, tend to receive greater benefits under ABS, confirming the trend we saw in <em>Table 4</em>.</p>
+
+    <p style="text-align:center"><img src="https://github.com/shinorimax/Baseball_Research/blob/main/docs/figures/table5.png?raw=true" alt="Table 5. Top 20 pitchers with ABS Benefit per judged pitch." width="1000" /><br /><em>Table 5. Top 20 pitchers with ABS Benefit per judged pitch.</em></p>
+
+    <p style="text-align:center"><img src="https://github.com/shinorimax/Baseball_Research/blob/main/docs/figures/table6.png?raw=true" alt="Table 6. Bottom 20 pitchers with ABS Benefit per judged pitch." width="1000" /><br /><em>Table 6. Bottom 20 pitchers with ABS Benefit per judged pitch.</em></p>
+
+    <p style="text-align:center"><img src="https://github.com/shinorimax/Baseball_Research/blob/main/docs/figures/figure6.png?raw=true" alt="Figure 7. ABS Benefit by Pitcher Height and Handedness." width="1000" /><br /><em>Figure 7. ABS Benefit by Pitcher Height and Handedness.</em></p>
+
+    <p>By definition, lower values of ABS benefit are better for pitchers. In contrast to hitters, we do not observe any noticeable trend regarding pitcher handedness or height from our data.</p>
+
+    <h2>Takeaways</h2>
+
+    <ol>
+      <li><strong>ABS generally tilts in favor of hitters.</strong><br>
+      Across the 2025 dataset up to August 16th, ABS overturned umpire-called strikes at roughly double the rate of overturned balls—even though there are nearly twice as many balls as strikes overall. The net effect is more hitter-friendly calls.</li>
+
+      <li><strong>The top of the zone will shrink.</strong><br>
+      Heatmaps (<em>Figure 2</em>) show ABS consistently trimming strikes especially at the top of the zone, since its 53.5% height cutoff sits lower than the traditional rulebook zone—and lower than what umpires often give. Pitchers who rely on high fastballs for whiffs or weak contact may find that weapon blunted, while hitters can more confidently take borderline pitches up in the zone.</li>
+
+      <li><strong>Batter height and handedness matter most.</strong><br>
+      As demonstrated in (<em>Figure 6</em>), shorter hitters and right-handed hitters see the largest gains under ABS. While this won’t instantly reshape roster construction—MLB won’t suddenly be flooded with short, right-handed hitters—it does highlight a potential flaw in the tentative ABS definition that MLB may need to revisit.</li>
+
+      <li><strong>Matchup dynamics will shift.</strong><br>
+      Pitcher–batter handedness combinations strongly influence ABS effects. Left-handed pitchers are penalized more against right-handed hitters than against lefties (<em>Tables 2</em>). This could subtly elevate the relative value of right-handed bats against southpaws, and vice versa.</li>
+    </ol>
+
+    <p>After all, definition of ABS zone is likely be tweaked moving forward, ABS won’t fully replace human umpires for a few more years, and the challenge system may only directly affect a handful of pitches per game. Yet in baseball, small statistical edges separate the great from the good. A single overturned call in a leverage spot—say, a full count in the bottom of the ninth of Game 7—can change not only an at-bat, but the outcome of a season. That is the true magnitude of ABS: its impact lies less in volume, and more in the pivotal moments where the game hangs in the balance. It will be interesting to see how MLB moves forward with ABS, how it addresses the flaws and biases we’ve observed, and how teams and players adapt.</p>
+
+    <h3>Author’s Note</h3>
+    <p>This is my first blog post, and I truly appreciate any feedback on how I can improve both the analysis and the writing! Your thoughts and suggestions will help me make future pieces clearer, sharper, and more useful for readers.</p>
+
+    <h3>References</h3>
+    <ul>
+      <li><a href="https://baseballsavant.mlb.com/" target="_blank">Baseball Savant – Statcast Data Source</a></li>
+      <li><a href="https://blogs.fangraphs.com/maybe-theres-no-such-thing-as-a-perfectly-fair-strike-zone/" target="_blank">FanGraphs – Maybe There’s No Such Thing as a Perfectly Fair Strike Zone</a></li>
+      <li><a href="https://www.mlb.com/news/automatic-ball-strike-challenge-system-overturns-ball-call-2025-all-star-game" target="_blank">MLB.com – Automatic Ball-Strike Challenge System Overturns Ball Call (2025 All-Star Game)</a></li>
+      <li><a href="https://www.mlb.com/news/automated-ball-strike-calls-mlb-spring-games" target="_blank">MLB.com – Automated Ball-Strike Calls in MLB Spring Games</a></li>
+      <li><a href="https://www.nytimes.com/athletic/6406613/2025/06/11/robo-umpires-mlb-2025-player-poll/" target="_blank">The Athletic – Robo-Umpires MLB 2025 Player Poll</a></li>
+      <li><a href="https://umpscorecards.com/page/info/explainers/true-strike-zone" target="_blank">Ump Scorecards – Explainer: The True Strike Zone</a></li>
+      <li><a href="https://en.wikipedia.org/wiki/Automated_Ball-Strike_System" target="_blank">Wikipedia – Automated Ball-Strike System</a></li>
+    </ul>
+    <!-- ARTICLE END -->
+  </div>
+
+  <footer>
+    <p>&copy; 2025 Shinnosuke Yagi</p>
+  </footer>
+</body>
+</html>
