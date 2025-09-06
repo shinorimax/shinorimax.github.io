@@ -177,6 +177,22 @@
       font-size: .95rem;
     }
 
+    /* Center all article media */
+    .media img,
+    .media video {
+      display: block;           /* already true, but explicit */
+      margin-left: auto;
+      margin-right: auto;       /* centers block elements */
+    }
+
+    /* Safety net: center any images/videos in the article card, even outside .media */
+    .project-container img,
+    .project-container video {
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
     /* ---------- Tables ---------- */
     .table-wrap{
       max-width: 900px;
