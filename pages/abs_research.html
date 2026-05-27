@@ -26,7 +26,7 @@
       --shadow-md: 0 10px 30px rgba(0,0,0,.08);
       --radius: 14px;
       --radius-lg: 18px;
-      --container: 1100px;
+      --container: 1600px;
       --table-border: rgba(0,0,0,.12);
       --table-stripe: rgba(0,0,0,.035);
     }
@@ -146,7 +146,7 @@
       box-shadow: var(--shadow-md);
       margin: 28px auto 40px;
       padding: clamp(20px, 3vw, 32px);
-      max-width: 900px;
+      max-width: var(--container);
     }
     .project-container h2{
       margin-top: 1rem;
@@ -162,7 +162,7 @@
 
     /* ---------- Media / Figures ---------- */
     .media{
-      max-width: 900px;
+      max-width: 100%;
       margin: 0 auto;
       text-align: center;
     }
@@ -195,7 +195,7 @@
 
     /* ---------- Tables ---------- */
     .table-wrap{
-      max-width: 900px;
+      max-width: 100%;
       margin: 0 auto;
       overflow-x: auto;
       border-radius: 12px;

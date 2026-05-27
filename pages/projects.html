@@ -21,7 +21,7 @@
             --shadow-md: 0 10px 30px rgba(0,0,0,.08);
             --radius: 14px;
             --radius-lg: 18px;
-            --container: 1100px;
+            --container: 1600px;
         }
         @media (prefers-color-scheme: dark){
             :root{
@@ -170,9 +170,10 @@
         }
         .project-list li{
             margin: 14px 0;
-            padding: 14px 14px 12px;
+            padding: 0;
             background: linear-gradient(0deg, rgba(0,0,0,.02), rgba(0,0,0,.02)), #f0f4f8;
             border-radius: 12px;
+            overflow: hidden;
             transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
             box-shadow: 0 2px 8px rgba(0,0,0,.05);
         }
@@ -186,15 +187,84 @@
             font-size: 1.02rem;
             line-height: 1.35;
         }
-        .project-list h3 a{
-            color: var(--primary-700);
+        .project-card{
+            display: grid;
+            grid-template-columns: 96px 1fr;
+            gap: 14px;
+            align-items: center;
+            min-height: 108px;
+            padding: 12px;
+            color: inherit;
             text-decoration: none;
         }
-        .project-list h3 a:hover{ text-decoration: underline; }
+        .project-card:hover{ color: inherit; }
+        .project-card:focus-visible{
+            outline: 3px solid var(--ring);
+            outline-offset: -3px;
+            border-radius: 12px;
+        }
+        .project-card h3{
+            color: var(--primary-700);
+            transition: color .2s ease;
+        }
+        .project-card:hover h3{ color: var(--primary); }
+        .project-thumb{
+            position: relative;
+            display: grid;
+            place-items: center;
+            width: 96px;
+            aspect-ratio: 4 / 3;
+            border-radius: 10px;
+            overflow: hidden;
+            color: #fff;
+            font-weight: 800;
+            letter-spacing: .08em;
+            box-shadow: inset 0 0 0 1px rgba(255,255,255,.22), 0 8px 20px rgba(0,0,0,.12);
+        }
+        .project-thumb::before{
+            content:"";
+            position:absolute;
+            inset:0;
+            background:
+                linear-gradient(135deg, rgba(255,255,255,.24), transparent 45%),
+                radial-gradient(circle at 80% 20%, rgba(255,255,255,.28), transparent 24%);
+        }
+        .project-thumb span{
+            position: relative;
+            z-index: 1;
+            font-size: .92rem;
+            text-align: center;
+        }
+        .project-thumb img{
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .project-thumb img.icon-sociology{
+            object-position: center 28%;
+        }
+        .project-thumb.has-image{
+            background: #e5e7eb;
+        }
+        .project-thumb.has-image::before{
+            background: linear-gradient(135deg, rgba(255,255,255,.22), transparent 44%);
+            z-index: 2;
+            pointer-events: none;
+        }
         .project-list p{
             margin: 0;
             color: var(--muted);
             font-size: .98rem;
+        }
+        @media (max-width: 420px){
+            .project-card{
+                grid-template-columns: 76px 1fr;
+                gap: 12px;
+            }
+            .project-thumb{ width: 76px; }
+            .project-thumb span{ font-size: .78rem; }
         }
 
         /* ---------- Footer ---------- */
@@ -241,16 +311,31 @@
                 <h2>Research</h2>
                 <ul class="project-list">
                     <li>
-                        <h3><a href="phylogenetic.html">Research at Palacios Lab</a></h3>
-                        <p>Distance metric for phylogenetic trees to detect selection</p>
+                        <a class="project-card" href="phylogenetic.html">
+                            <div class="project-thumb has-image" aria-hidden="true"><img src="../assets/icons/phylogenetic.jpeg" alt=""></div>
+                            <div>
+                                <h3>Research at Palacios Lab</h3>
+                                <p>Distance metric for phylogenetic trees to detect selection</p>
+                            </div>
+                        </a>
                     </li>            
                     <li>
-                        <h3><a href="wildfire.html">Big Earth Hackathon Wildfire Challenge</a></h3>
-                        <p>Random Forest to detect post-wildfire landslides</p>
+                        <a class="project-card" href="wildfire.html">
+                            <div class="project-thumb has-image" aria-hidden="true"><img src="../assets/icons/wildfire.jpeg" alt=""></div>
+                            <div>
+                                <h3>Big Earth Hackathon Wildfire Challenge</h3>
+                                <p>Random Forest to detect post-wildfire landslides</p>
+                            </div>
+                        </a>
                     </li>
                     <li>
-                        <h3><a href="sociology.html">Research at Sociology Dept.</a></h3>
-                        <p>Democracy index and economic document analysis</p>
+                        <a class="project-card" href="sociology.html">
+                            <div class="project-thumb has-image" aria-hidden="true"><img class="icon-sociology" src="../assets/icons/sociology.png" alt=""></div>
+                            <div>
+                                <h3>Research at Sociology Dept.</h3>
+                                <p>Democracy index and economic document analysis</p>
+                            </div>
+                        </a>
                     </li>
                 </ul>
             </section>
@@ -259,20 +344,40 @@
                 <h2>Featured Projects</h2>
                 <ul class="project-list">
                     <li>
-                        <h3><a href="abs_research.html">ABS vs. Umpires: Where the Calls Diverge</a></h3>
-                        <p>Simulating MLB’s ABS system in 2025 to analyze strike zone changes and impacts on players</p>
+                        <a class="project-card" href="abs_research.html">
+                            <div class="project-thumb has-image" aria-hidden="true"><img src="../assets/icons/abs_research.jpeg" alt=""></div>
+                            <div>
+                                <h3>ABS vs. Umpires: Where the Calls Diverge</h3>
+                                <p>Simulating MLB’s ABS system in 2025 to analyze strike zone changes and impacts on players</p>
+                            </div>
+                        </a>
                     </li>
                     <li>
-                        <h3><a href="cs229_project.html">CS 229 Project</a></h3>
-                        <p>Neural Network and Genetic Algorithm to maximize signal significance in particle physics</p>
+                        <a class="project-card" href="cs229_project.html">
+                            <div class="project-thumb has-image" aria-hidden="true"><img src="../assets/icons/cs229_project.jpg" alt=""></div>
+                            <div>
+                                <h3>CS 229 Project</h3>
+                                <p>Neural Network and Genetic Algorithm to maximize signal significance in particle physics</p>
+                            </div>
+                        </a>
                     </li>            
                     <li>
-                        <h3><a href="geophys190_project.html">GEOPHYS 190 Project</a></h3>
-                        <p>Researching optimal location for groundwater recharge in Kings Subbasin, California</p>
+                        <a class="project-card" href="geophys190_project.html">
+                            <div class="project-thumb has-image" aria-hidden="true"><img src="../assets/icons/geophysics_project.jpeg" alt=""></div>
+                            <div>
+                                <h3>GEOPHYS 190 Project</h3>
+                                <p>Researching optimal location for groundwater recharge in Kings Subbasin, California</p>
+                            </div>
+                        </a>
                     </li>
                     <li>
-                        <h3><a href="stats100_project.html">STATS 100 Project</a></h3>
-                        <p>The Case for Batting Average: Measuring Offensive Consistency in Terms of Hit Frequency</p>
+                        <a class="project-card" href="stats100_project.html">
+                            <div class="project-thumb has-image" aria-hidden="true"><img src="../assets/icons/stats100_project.jpeg" alt=""></div>
+                            <div>
+                                <h3>STATS 100 Project</h3>
+                                <p>The Case for Batting Average: Measuring Offensive Consistency in Terms of Hit Frequency</p>
+                            </div>
+                        </a>
                     </li>
                 </ul>
             </section>
@@ -281,8 +386,13 @@
                 <h2>Work Experience</h2>
                 <ul class="project-list">
                     <li>
-                        <h3><a href="eneye.html">eneye</a></h3>
-                        <p>Building data preprocessing pipeline and frontend development</p>
+                        <a class="project-card" href="eneye.html">
+                            <div class="project-thumb has-image" aria-hidden="true"><img src="../assets/icons/eneye.png" alt=""></div>
+                            <div>
+                                <h3>eneye</h3>
+                                <p>Building data preprocessing pipeline and frontend development</p>
+                            </div>
+                        </a>
                     </li>            
                 </ul>
             </section>

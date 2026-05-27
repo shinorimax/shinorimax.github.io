@@ -21,7 +21,7 @@
             --shadow-md: 0 10px 30px rgba(0,0,0,.08);
             --radius: 14px;
             --radius-lg: 18px;
-            --container: 1100px;
+            --container: 1600px;
         }
         @media (prefers-color-scheme: dark){
             :root{
@@ -126,7 +126,7 @@
             box-shadow: var(--shadow-md);
             margin: 28px auto 40px;
             padding: clamp(20px, 3vw, 32px);
-            max-width: 900px;
+            max-width: var(--container);
         }
         .project-container section + section{ margin-top: 22px; }
         .project-container h2{
@@ -176,10 +176,32 @@
             padding-left: 20px;
         }
         .summary-list li{ margin: 8px 0; }
+        .formula-block{
+            margin: 16px 0;
+            padding: 14px 16px;
+            border-left: 4px solid var(--primary);
+            border-radius: 10px;
+            background: linear-gradient(0deg, rgba(11,143,143,.06), rgba(11,143,143,.06)), var(--card-bg);
+            overflow-x: auto;
+        }
+        .formula-block code{
+            display: block;
+            color: var(--text);
+            font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+            font-size: .95rem;
+            line-height: 1.55;
+            white-space: nowrap;
+        }
+        .formula-block span{
+            display: block;
+            margin-top: 8px;
+            color: var(--muted);
+            font-size: .94rem;
+        }
         .figure-grid{
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 18px;
+            grid-template-columns: repeat(auto-fit, minmax(min(100%, 520px), 1fr));
+            gap: 24px;
             margin-top: 10px;
         }
         .figure-card{
@@ -187,7 +209,7 @@
             background: linear-gradient(0deg, rgba(0,0,0,.02), rgba(0,0,0,.02)), var(--card-bg);
             border-radius: 12px;
             box-shadow: var(--shadow-sm);
-            padding: 12px;
+            padding: 16px;
         }
         .figure-card img{
             width: 100%;
@@ -263,18 +285,46 @@
             <h2>Research Summary</h2>
             <p>
                 I am currently working as a research assistant at the <a href="https://juliapalacios.github.io/">Palacios Lab</a>, under the supervision of Prof. Julia Palacios.
-                The project develops a genealogy-based framework for detecting and localizing natural selection by measuring how far local ranked genealogies deviate from neutral expectations.
-                Instead of relying only on allele-frequency or haplotype summaries, we represent each local tree with an F-matrix that preserves ranked tree-shape information, with weighted variants that also encode coalescent-time structure.
+                This project develops a genealogy-based test for natural selection.
+                Instead of starting from allele frequencies or haplotypes alone, we look at local genealogical trees along the genome: if a beneficial mutation rapidly rises in frequency, nearby lineages tend to coalesce in unusual, often compressed and imbalanced, patterns.
+                The goal is to quantify those departures from what neutral evolution would usually produce.
             </p>
             <p>
-                Using selective-sweep simulations generated with SLiM and post-processed with msprime, we compare distance-to-neutral statistics against established baselines such as Tajima's D, bsfs, btree, and Colless imbalance.
-                Recent experiment results shows that the unweighted D<sup>(1)</sup><sub>F</sub> statistic performs strongly for genome-wide classification and that the same framework can produce position-wise selection profiles.
-                We also apply these summaries to 1000 Genomes Project tree sequences, where background-corrected contrasts recover known selection targets including LCT in Europeans and EDAR in East Asian populations.
+                The central object is the <strong>F-matrix</strong>, proposed by <a href="https://juliapalacios.github.io/research/publications/1922851117.full.pdf"> Kim et al. (2020) </a>.
+                For a ranked genealogy <em>T</em> with <em>n</em> sampled lineages, <em>F(T)</em> is an (<em>n</em> - 1) by (<em>n</em> - 1) matrix that records the ranked shape of the tree.
+                Informally, its entries count how lineages persist through successive coalescent intervals, so it preserves more structure than a single imbalance score while ignoring arbitrary tip labels.
+            </p>
+            <div class="formula-block">
+                <code>F<sub>0</sub> = E<sub>0</sub>[F(T<sub>0</sub>)]</code>
+                <span><strong>Neutral reference:</strong> average F-matrix under a neutral Kingman coalescent. This is the baseline tree shape we compare against.</span>
+            </div>
+            <p>
+                For one local tree, we measure how unusual it is by taking its distance to this neutral reference.
+                The main statistic in the draft is the L<sub>1</sub> distance-to-neutral:
+            </p>
+            <div class="formula-block">
+                <code>D<sup>(1)</sup><sub>F</sub>(T) = &sum;<sub>i=1</sub><sup>n-1</sup> &sum;<sub>j=1</sub><sup>i</sup> | F(T)<sub>ij</sub> - (F<sub>0</sub>)<sub>ij</sub> |</code>
+                <span><strong>Interpretation:</strong> larger values mean the local genealogy is farther from the neutral mean tree shape.</span>
+            </div>
+            <p>
+                We also consider weighted versions, where the F-matrix is multiplied entrywise by a nonnegative weight matrix <em>W</em>.
+                These statistics, written as <em>D</em><sup>(1)</sup><sub><em>FW</em></sub>, incorporate coalescent-time or branch-length information rather than using ranked topology alone.
+                Frobenius/L<sub>2</sub> versions are also possible and emphasize larger entrywise deviations.
+            </p>
+            <div class="formula-block">
+                <code>F&#772;<sup>(r)</sup> = (1 / L) &sum;<sub>t=1</sub><sup>T</sup> &ell;<sub>t</sub> F(T<sup>(t,r)</sup>)</code>
+                <span><strong>Genome-wide summary:</strong> for replicate <em>r</em>, local trees are averaged along the chromosome with weights proportional to the genomic segment lengths &ell;<sub>t</sub>.</span>
+            </div>
+            <p>
+                In simulations, neutral replicates are used to estimate the reference matrices, and held-out neutral and selective replicates are compared using ROC-AUC.
+                The unweighted <em>D</em><sup>(1)</sup><sub><em>F</em></sub> statistic performs strongly for genome-wide classification, especially for moderate-to-strong sweeps and higher derived-allele frequencies.
+                The same statistic can also be plotted by genomic position: a local peak in distance, or a local dip in empirical <em>p</em>-value, points to the likely sweep location.
             </p>
             <ul class="summary-list">
-                <li><strong>Core idea:</strong> compare observed local genealogies to neutral reference F-matrices rather than summarizing sequence variation alone.</li>
-                <li><strong>Simulation result:</strong> distance-to-neutral statistics separate neutral and selected replicates, with power increasing for stronger and higher-frequency sweeps.</li>
-                <li><strong>Real-data result:</strong> empirical background correction is important because chromosome-wide genealogical structure varies across the genome.</li>
+                <li><strong>Core idea:</strong> selection changes local tree shape, so compare each observed genealogy to a neutral reference in F-matrix space.</li>
+                <li><strong>Detection task:</strong> collapse local trees into a chromosome-wide average and test whether its distance to neutrality separates selected from neutral simulations.</li>
+                <li><strong>Localization task:</strong> compute the same distance along genomic position and look for unusually high deviation near a selected site.</li>
+                <li><strong>Real-data lesson:</strong> 1000 Genomes analyses require a position-specific background correction; difference-in-differences contrasts recover known targets such as <em>LCT</em> in Europeans and <em>EDAR</em> in East Asian populations.</li>
             </ul>
         </section>
 
@@ -282,45 +332,45 @@
             <h2>Key Figures</h2>
             <div class="figure-grid">
                 <figure class="figure-card">
-                    <img src="../assets/Images/F-matrix.png" alt="F-matrix encoding of a ranked genealogy">
+                    <img src="../assets/F-matrix.png" alt="F-matrix encoding of a ranked genealogy">
                     <figcaption>
                         <strong>F-matrix representation.</strong>
-                        Unique encoding of isochronous ranked tree shapes and F matrices. The ranked genealogy is represented by an F matrix that encodes the ranked tree shape.
+                        A ranked genealogy can be converted into an F-matrix, where the matrix entries summarize how lineages persist through ordered coalescent intervals. This turns a tree shape into a structured numerical object, making it possible to compare local genealogies with standard matrix distances. Representation proposed by <a href="https://juliapalacios.github.io/research/publications/1922851117.full.pdf">Kim et al. (2020)</a>.
                     </figcaption>
                 </figure>
                 <figure class="figure-card">
-                    <img src="../assets/Images/ROC_AUC_s0.01_v1.png" alt="Genome-wide ROC curves for selection detection">
+                    <img src="../assets/ROC_AUC_s0.01_v1.png" alt="Genome-wide ROC curves for selection detection">
                     <figcaption>
                         <strong>Genome-wide detection.</strong>
-                        ROC curves classify neutral replicates versus positively selected replicates for selection strength s = 0.01 across target derived-allele frequencies 0.25, 0.5, and 0.75. Distance-to-neutral statistics are compared with bsfs, Tajima's D, btree, and Colless.
+                        Each curve shows how well a statistic separates neutral simulations from simulations with a selective sweep. Higher curves and larger AUC values mean better classification. Here, distance-to-neutral F-matrix statistics are compared with common baselines, including bsfs, Tajima's D, btree, and Colless, for selection strength s = 0.01 at derived-allele frequencies 0.25, 0.5, and 0.75.
                     </figcaption>
                 </figure>
                 <figure class="figure-card">
-                    <img src="../assets/Images/distance_vs_location_v1.png" alt="Distance-to-neutral profiles across genomic position">
+                    <img src="../assets/distance_vs_location_v1.png" alt="Distance-to-neutral profiles across genomic position">
                     <figcaption>
                         <strong>Localizing a simulated sweep.</strong>
-                        Per-tree D<sup>(1)</sup><sub>F</sub> distance-to-neutral profiles across genomic position show localized elevation near the selected site, with stronger signals at higher target derived-allele frequencies.
+                        The x-axis is genomic position and the y-axis is the per-tree D<sup>(1)</sup><sub>F</sub> distance from the neutral reference. A selective sweep should make nearby local genealogies look less neutral, so the expected pattern is a bump around the selected site. The elevation becomes clearer as the beneficial allele reaches higher frequency.
                     </figcaption>
                 </figure>
                 <figure class="figure-card">
-                    <img src="../assets/Images/p-val_vs_location_v1.png" alt="Empirical p-value profiles across genomic position">
+                    <img src="../assets/p-val_vs_location_v1.png" alt="Empirical p-value profiles across genomic position">
                     <figcaption>
                         <strong>Position-wise significance.</strong>
-                        Binned empirical p-value profiles compare selective distances with bin-specific neutral null distributions. A pronounced dip near the selected site indicates localized deviation from neutrality.
+                        This view converts the distance profile into empirical p-values by comparing each genomic bin with neutral simulations from the same bin. Low values mark positions where the observed distance is unusually large under neutrality. The dip near the selected site shows that the method can turn tree-shape distortion into a localized significance signal.
                     </figcaption>
                 </figure>
                 <figure class="figure-card">
-                    <img src="../assets/Images/chr2_diff_in_diff_CEU_bin_100000.png" alt="Difference-in-differences localization for CEU near LCT">
+                    <img src="../assets/chr2_diff_in_diff_CEU_bin_100000.png" alt="Difference-in-differences localization for CEU near LCT">
                     <figcaption>
                         <strong>LCT in CEU.</strong>
-                        Difference-in-differences localization on chromosome 2 subtracts the shared all-population background from the CEU D<sup>(1)</sup><sub>F</sub> profile, concentrating the strongest signal near the LCT region.
+                        In real data, raw distance-to-neutral profiles vary across the chromosome for reasons unrelated to one selected locus. This contrast subtracts a shared all-population background from the CEU profile, leaving population-specific deviations. After correction, the strongest localized signal concentrates near LCT, a known target of selection in Europeans.
                     </figcaption>
                 </figure>
                 <figure class="figure-card">
-                    <img src="../assets/Images/chr2_diff_in_diff_CHB_bin_100000.png" alt="Difference-in-differences localization for CHB near EDAR">
+                    <img src="../assets/chr2_diff_in_diff_CHB_bin_100000.png" alt="Difference-in-differences localization for CHB near EDAR">
                     <figcaption>
                         <strong>EDAR in CHB.</strong>
-                        The same background-corrected contrast for CHB isolates a localized population-specific signal near the EDAR region, a known target of selection in East Asian populations.
+                        The same background-correction strategy is applied to CHB on chromosome 2. The resulting contrast highlights where CHB genealogies depart from the shared chromosome-wide background. The localized signal near EDAR matches a well-known selection target in East Asian populations.
                     </figcaption>
                 </figure>
             </div>

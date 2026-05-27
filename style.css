@@ -40,7 +40,7 @@ nav ul li a:hover {
 
 /* Section */
 section {
-    max-width: 800px;
+    max-width: var(--container, 1600px);
     margin: 40px auto;
     padding: 20px;
     background-color: white;
@@ -50,7 +50,7 @@ section {
 
 /* Project Container */
 .project-container {
-    max-width: 800px;
+    max-width: var(--container, 1600px);
     margin: 0 auto;
     padding: 20px;
 }
