@@ -119,6 +119,16 @@ header h1{
     letter-spacing: 0 !important;
 }
 
+header h1 a{
+    color: inherit !important;
+    text-decoration: none !important;
+}
+
+header h1 a:hover,
+header h1 a:focus-visible{
+    color: var(--primary-700) !important;
+}
+
 nav ul{
     gap: 8px !important;
     align-items: center;

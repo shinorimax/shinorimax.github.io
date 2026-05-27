@@ -171,11 +171,20 @@
             box-shadow: 0 10px 22px rgba(0,0,0,.10);
             background: linear-gradient(0deg, rgba(11,143,143,.04), rgba(11,143,143,.04)), #eefaf5;
         }
-        .contact-list i{
-            font-size: 22px;
-            color: var(--primary-700);
+        .contact-icon{
+            display:grid;
+            place-items:center;
+            flex: 0 0 38px;
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background: #fff;
+            box-shadow: 0 2px 8px rgba(0,0,0,.06);
+        }
+        .contact-icon img{
             width: 24px;
-            text-align:center;
+            height: 24px;
+            object-fit: contain;
         }
         .contact-list a{
             color: var(--primary-700);
@@ -207,7 +216,7 @@
 <body>
     <header>
         <div class="wrap">
-            <h1>Shinnosuke Yagi</h1>
+            <h1><a href="../index.html">Shinnosuke Yagi</a></h1>
             <nav>
                 <ul class="nav-list">
                     <li><a href="../index.html">Home</a></li>
@@ -226,9 +235,9 @@
         <h2>Get in Touch</h2>
         <p>Feel free to reach out through any of the following:</p>
         <ul class="contact-list">
-            <li><i class="fas fa-envelope" aria-hidden="true"></i><a href="mailto:syagi2@stanford.edu">syagi2@stanford.edu</a></li>
-            <li><i class="fab fa-github" aria-hidden="true"></i><a href="https://github.com/shinorimax">github.com/shinorimax</a></li>
-            <li><i class="fab fa-linkedin" aria-hidden="true"></i><a href="https://www.linkedin.com/in/shinnosuke-yagi-1a2914230/">linkedin.com/in/shinnosuke-yagi</a></li>
+            <li><span class="contact-icon" aria-hidden="true"><img src="../assets/icons/email.webp" alt=""></span><a href="mailto:syagi2@stanford.edu">syagi2@stanford.edu</a></li>
+            <li><span class="contact-icon" aria-hidden="true"><img src="../assets/icons/github.png" alt=""></span><a href="https://github.com/shinorimax">github.com/shinorimax</a></li>
+            <li><span class="contact-icon" aria-hidden="true"><img src="../assets/icons/linkedin.png" alt=""></span><a href="https://www.linkedin.com/in/shinnosuke-yagi-1a2914230/">linkedin.com/in/shinnosuke-yagi</a></li>
         </ul>
     </section>
 
