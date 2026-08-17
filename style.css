@@ -202,6 +202,8 @@ section{
 }
 
 .memo-stage{
+    height: clamp(640px, 76vh, 820px) !important;
+    align-items: stretch !important;
     background:
         linear-gradient(135deg, rgba(89,210,255,.10), transparent 34%),
         linear-gradient(315deg, rgba(91,118,255,.12), transparent 38%),
@@ -210,6 +212,8 @@ section{
 }
 
 .memo-sky{
+    min-height: 0 !important;
+    height: 100% !important;
     background:
         linear-gradient(135deg, rgba(89,210,255,.11), transparent 34%),
         linear-gradient(315deg, rgba(255,179,92,.12), transparent 35%),
@@ -230,6 +234,10 @@ section{
 .memo-detail{
     background: #f8fbf9 !important;
     color: #17252c !important;
+    min-height: 0 !important;
+    height: 100% !important;
+    overflow-y: auto;
+    overscroll-behavior: contain;
 }
 
 .memo-detail h2,
@@ -457,6 +465,18 @@ footer p{
     .memo-sky .memo-star-label{
         color: #edfafa !important;
         background: rgba(8,18,26,.94) !important;
+    }
+
+    .memo-stage{
+        height: auto !important;
+    }
+
+    .memo-sky{
+        height: clamp(540px, 68vh, 640px) !important;
+    }
+
+    .memo-detail{
+        height: min(540px, 64vh) !important;
     }
 
     header .wrap{
