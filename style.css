@@ -180,11 +180,17 @@ section{
 }
 
 .memo-hero{
+    width: min(100% - 48px, var(--container)) !important;
+    margin-inline: auto !important;
     background:
         linear-gradient(135deg, rgba(89,210,255,.12), transparent 36%),
         linear-gradient(315deg, rgba(91,118,255,.16), transparent 40%),
         #071017 !important;
     border-color: rgba(255,255,255,.10) !important;
+}
+
+.memo-hero > .wrap{
+    width: 100% !important;
 }
 
 .memo-hero h2{
@@ -391,6 +397,10 @@ footer p{
 
 @media (max-width: 760px){
     .wrap{
+        width: min(100% - 32px, var(--container)) !important;
+    }
+
+    .memo-hero{
         width: min(100% - 32px, var(--container)) !important;
     }
 
