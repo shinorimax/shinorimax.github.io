@@ -1,5 +1,5 @@
 (function () {
-    const entries = window.memorandumEntries || [];
+    let entries = window.memorandumEntries || [];
     const state = {
         selectedId: entries[0] ? entries[0].id : null,
         query: "",
@@ -30,6 +30,17 @@
     const searchInput = document.querySelector("[data-search]");
     const randomButton = document.querySelector("[data-random]");
     const countLabel = document.querySelector("[data-count]");
+    const stopWords = new Set([
+        "a", "about", "after", "again", "all", "also", "am", "an", "and", "any", "are", "as", "at",
+        "be", "because", "been", "being", "between", "but", "by", "can", "could", "did", "do", "does",
+        "doing", "down", "each", "for", "from", "had", "has", "have", "having", "he", "her", "here",
+        "hers", "him", "his", "how", "i", "if", "in", "into", "is", "it", "its", "like", "may", "me",
+        "more", "most", "my", "near", "not", "of", "on", "one", "or", "other", "our", "out", "over",
+        "own", "same", "she", "should", "so", "some", "such", "than", "that", "the", "their", "them",
+        "then", "there", "these", "they", "this", "through", "to", "too", "under", "up", "use", "used",
+        "uses", "using", "very", "was", "way", "we", "were", "what", "when", "where", "which", "while",
+        "who", "why", "will", "with", "within", "would", "you", "your"
+    ]);
 
     function matchesEntry(entry) {
         const text = `${entry.question} ${entry.answer} ${entry.category}`.toLowerCase();
@@ -44,6 +55,223 @@
 
     function entryById(id) {
         return entries.find((entry) => entry.id === id);
+    }
+
+    function clamp(value, min, max) {
+        return Math.min(max, Math.max(min, value));
+    }
+
+    function seededUnit(id, salt) {
+        let hash = 2166136261;
+        const text = `${id}:${salt}`;
+        for (let index = 0; index < text.length; index += 1) {
+            hash ^= text.charCodeAt(index);
+            hash = Math.imul(hash, 16777619);
+        }
+        return (hash >>> 0) / 4294967295;
+    }
+
+    function normalizeToken(token) {
+        return token
+            .replace(/'s$/, "")
+            .replace(/(?:ing|edly|edly|ed|es|s)$/, "");
+    }
+
+    function tokenize(entry) {
+        return `${entry.question} ${entry.answer}`
+            .toLowerCase()
+            .replace(/tf-idf/g, "tfidf")
+            .replace(/directx/g, "directx")
+            .match(/[a-z0-9]+/g)
+            ?.map(normalizeToken)
+            .filter((token) => token.length > 2 && !stopWords.has(token)) || [];
+    }
+
+    function cosineSimilarity(a, b) {
+        let dot = 0;
+        let aNorm = 0;
+        let bNorm = 0;
+        Object.keys(a).forEach((term) => {
+            aNorm += a[term] * a[term];
+            if (b[term]) dot += a[term] * b[term];
+        });
+        Object.keys(b).forEach((term) => {
+            bNorm += b[term] * b[term];
+        });
+        if (!aNorm || !bNorm) return 0;
+        return dot / (Math.sqrt(aNorm) * Math.sqrt(bNorm));
+    }
+
+    function analyzeEntries(sourceEntries) {
+        const docs = sourceEntries.map((entry) => {
+            const tokens = tokenize(entry);
+            const counts = tokens.reduce((accumulator, token) => {
+                accumulator[token] = (accumulator[token] || 0) + 1;
+                return accumulator;
+            }, {});
+            return {
+                entry,
+                counts,
+                unique: new Set(Object.keys(counts)),
+                vector: {}
+            };
+        });
+        const documentFrequency = {};
+        docs.forEach((doc) => {
+            doc.unique.forEach((term) => {
+                documentFrequency[term] = (documentFrequency[term] || 0) + 1;
+            });
+        });
+        const idf = {};
+        Object.keys(documentFrequency).forEach((term) => {
+            idf[term] = Math.log((sourceEntries.length + 1) / (documentFrequency[term] + 1)) + 1;
+        });
+        docs.forEach((doc) => {
+            const maxCount = Math.max(...Object.values(doc.counts), 1);
+            Object.keys(doc.counts).forEach((term) => {
+                doc.vector[term] = (doc.counts[term] / maxCount) * idf[term];
+            });
+        });
+        return { docs, idf };
+    }
+
+    function buildSimilarityPairs(docs, idf) {
+        const pairs = [];
+        for (let i = 0; i < docs.length; i += 1) {
+            for (let j = i + 1; j < docs.length; j += 1) {
+                const a = docs[i];
+                const b = docs[j];
+                const sharedTerms = [...a.unique]
+                    .filter((term) => b.unique.has(term) && idf[term] >= 1.25)
+                    .sort((left, right) => idf[right] - idf[left] || left.localeCompare(right))
+                    .slice(0, 5);
+                const sharedScore = sharedTerms.reduce((total, term) => total + idf[term], 0);
+                const similarity = cosineSimilarity(a.vector, b.vector);
+                pairs.push({
+                    a: a.entry.id,
+                    b: b.entry.id,
+                    similarity,
+                    sharedTerms,
+                    edgeScore: similarity + sharedScore * 0.04
+                });
+            }
+        }
+        return pairs;
+    }
+
+    function assignRelatedFromText(sourceEntries, pairs) {
+        const byEntry = {};
+        sourceEntries.forEach((entry) => {
+            byEntry[entry.id] = [];
+            entry.related = [];
+            entry.sharedTerms = {};
+        });
+        pairs
+            .filter((pair) => pair.sharedTerms.length && pair.edgeScore >= 0.14)
+            .sort((left, right) => right.edgeScore - left.edgeScore)
+            .forEach((pair) => {
+                if (byEntry[pair.a].length >= 3 || byEntry[pair.b].length >= 3) return;
+                byEntry[pair.a].push(pair.b);
+                byEntry[pair.b].push(pair.a);
+                entryById(pair.a).sharedTerms[pair.b] = pair.sharedTerms;
+                entryById(pair.b).sharedTerms[pair.a] = pair.sharedTerms;
+            });
+        sourceEntries.forEach((entry) => {
+            entry.related = byEntry[entry.id];
+        });
+    }
+
+    function assignLayoutFromText(sourceEntries, pairs) {
+        const positions = {};
+        const categoryAnchors = {
+            games: { x: 0.24, y: 0.28 },
+            tech: { x: 0.38, y: 0.36 },
+            science: { x: 0.70, y: 0.42 },
+            language: { x: 0.30, y: 0.72 },
+            nature: { x: 0.73, y: 0.72 }
+        };
+
+        sourceEntries.forEach((entry) => {
+            const anchor = categoryAnchors[entry.category] || { x: 0.5, y: 0.5 };
+            const angle = seededUnit(entry.id, "angle") * Math.PI * 2;
+            const radius = 0.05 + seededUnit(entry.id, "radius") * 0.17;
+            positions[entry.id] = {
+                x: clamp(anchor.x + Math.cos(angle) * radius, 0.09, 0.91),
+                y: clamp(anchor.y + Math.sin(angle) * radius, 0.12, 0.88),
+                vx: 0,
+                vy: 0
+            };
+        });
+
+        for (let step = 0; step < 320; step += 1) {
+            for (let i = 0; i < sourceEntries.length; i += 1) {
+                for (let j = i + 1; j < sourceEntries.length; j += 1) {
+                    const a = positions[sourceEntries[i].id];
+                    const b = positions[sourceEntries[j].id];
+                    const dx = b.x - a.x || 0.001;
+                    const dy = b.y - a.y || 0.001;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    const overlap = Math.max(0, 0.16 - distance);
+                    if (!overlap) continue;
+                    const force = overlap * overlap * 0.09;
+                    const fx = (dx / distance) * force;
+                    const fy = (dy / distance) * force;
+                    a.vx -= fx;
+                    a.vy -= fy;
+                    b.vx += fx;
+                    b.vy += fy;
+                }
+            }
+
+            pairs.forEach((pair) => {
+                if (pair.similarity <= 0) return;
+                const a = positions[pair.a];
+                const b = positions[pair.b];
+                const dx = b.x - a.x;
+                const dy = b.y - a.y;
+                const distance = Math.sqrt(dx * dx + dy * dy) || 0.001;
+                const target = 0.12 + (1 - clamp(pair.similarity * 4, 0, 0.82)) * 0.18;
+                const force = (distance - target) * pair.similarity * 0.028;
+                const fx = (dx / distance) * force;
+                const fy = (dy / distance) * force;
+                a.vx += fx;
+                a.vy += fy;
+                b.vx -= fx;
+                b.vy -= fy;
+            });
+
+            sourceEntries.forEach((entry) => {
+                const point = positions[entry.id];
+                const anchor = categoryAnchors[entry.category] || { x: 0.5, y: 0.5 };
+                const drift = 0.0012 + seededUnit(entry.id, "drift") * 0.0015;
+                const twinkle = Math.sin(step * 0.17 + seededUnit(entry.id, "phase") * Math.PI * 2) * 0.0007;
+                point.vx += (anchor.x - point.x) * drift + twinkle;
+                point.vy += (anchor.y - point.y) * drift - twinkle * 0.6;
+                point.vx *= 0.86;
+                point.vy *= 0.86;
+                point.x = clamp(point.x + point.vx, 0.09, 0.91);
+                point.y = clamp(point.y + point.vy, 0.12, 0.88);
+            });
+        }
+
+        sourceEntries.forEach((entry) => {
+            const point = positions[entry.id];
+            entry.x = Math.round(point.x * 1000) / 10;
+            entry.y = Math.round(point.y * 1000) / 10;
+        });
+    }
+
+    function refreshConstellationLayout(sourceEntries = entries) {
+        entries = sourceEntries;
+        const { docs, idf } = analyzeEntries(entries);
+        const pairs = buildSimilarityPairs(docs, idf);
+        assignLayoutFromText(entries, pairs);
+        assignRelatedFromText(entries, pairs);
+        if (!entries.some((entry) => entry.id === state.selectedId)) {
+            state.selectedId = entries[0] ? entries[0].id : null;
+        }
+        window.memorandumEntries = entries;
+        return entries;
     }
 
     function escapeHtml(value) {
@@ -95,7 +323,13 @@
                 rendered.add(key);
 
                 const active = entry.id === state.selectedId || related.id === state.selectedId ? " is-active" : "";
-                lines.push(`<line class="memo-line${active}" x1="${entry.x}%" y1="${entry.y}%" x2="${related.x}%" y2="${related.y}%" />`);
+                const sharedTerms = entry.sharedTerms?.[related.id] || [];
+                const label = sharedTerms.length ? `Shared terms: ${sharedTerms.join(", ")}` : "";
+                lines.push(`
+                    <line class="memo-line${active}" x1="${entry.x}%" y1="${entry.y}%" x2="${related.x}%" y2="${related.y}%">
+                        ${label ? `<title>${escapeHtml(label)}</title>` : ""}
+                    </line>
+                `);
             });
         });
 
@@ -143,7 +377,11 @@
         const related = selected.related
             .map(entryById)
             .filter(Boolean)
-            .map((entry) => `<button type="button" data-related="${entry.id}">${escapeHtml(entry.question)}</button>`)
+            .map((entry) => {
+                const terms = selected.sharedTerms?.[entry.id] || [];
+                const title = terms.length ? `Shared terms: ${terms.join(", ")}` : "";
+                return `<button type="button" data-related="${entry.id}" title="${escapeHtml(title)}">${escapeHtml(entry.question)}</button>`;
+            })
             .join("");
         const googleSearchUrl = `https://www.google.com/search?q=${encodeURIComponent(selected.question)}`;
 
@@ -195,6 +433,12 @@
         renderCount(visible);
     }
 
+    window.refreshMemorandumConstellation = function (nextEntries = entries) {
+        refreshConstellationLayout(nextEntries);
+        render();
+        return entries;
+    };
+
     searchInput.addEventListener("input", (event) => {
         state.query = event.target.value.trim().toLowerCase();
         const visible = filteredEntries();
@@ -212,5 +456,6 @@
         render();
     });
 
+    refreshConstellationLayout(entries);
     render();
 }());
