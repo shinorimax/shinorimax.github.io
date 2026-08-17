@@ -21,7 +21,7 @@
             --shadow-md: 0 10px 30px rgba(0,0,0,.08);
             --radius: 14px;
             --radius-lg: 18px;
-            --container: 1100px;
+            --container: 1600px;
         }
         @media (prefers-color-scheme: dark){
             :root{
@@ -126,7 +126,7 @@
             box-shadow: var(--shadow-md);
             margin: 28px auto 40px;
             padding: clamp(20px, 3vw, 32px);
-            max-width: 900px;
+            max-width: var(--container);
         }
         .project-container section + section{ margin-top: 22px; }
         .project-container h2{
@@ -135,11 +135,46 @@
             letter-spacing:.3px;
         }
         .project-container p{ color: var(--text); }
+        .meta-list{
+            list-style:none;
+            margin: 14px 0 0;
+            padding: 0;
+            display:grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 12px;
+        }
+        .meta-list li{
+            padding: 12px 14px;
+            border-radius: 12px;
+            background: linear-gradient(0deg, rgba(0,0,0,.03), rgba(0,0,0,.03)), var(--card-bg);
+        }
+        .icon-strip{
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 14px;
+            margin-top: 22px;
+        }
+        .tool-icon{
+            display: grid;
+            place-items: center;
+            width: 74px;
+            height: 74px;
+            padding: 12px;
+            border-radius: 16px;
+            background: #fff;
+            box-shadow: var(--shadow-sm);
+        }
+        .tool-icon img{
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
 
         /* ---------- Gallery ---------- */
         .gallery-container{
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            grid-template-columns: 1fr;
             gap: 16px;
             margin-top: 8px;
         }
@@ -193,7 +228,7 @@
 <body>
     <header>
         <div class="wrap">
-            <h1>eneye Data Science Intern</h1>
+            <h1><a href="../index.html">eneye Data Science Intern</a></h1>
             <nav>
                 <ul>
                     <li><a href="../index.html">Home</a></li>
@@ -215,6 +250,17 @@
                 This streamlined workflow reduced manual intervention and improved the efficiency of generating insights from audit data. 
                 Through this work, I helped enhance eneye's ability to deliver actionable energy efficiency recommendations.
             </p>
+            <ul class="meta-list">
+                <li><strong>Company:</strong> eneye, Inc.</li>
+                <li><strong>Team:</strong> Data & Analytics</li>
+                <li><strong>Term:</strong> Summer 2024</li>
+                <li><strong>Location:</strong> Menlo Park, CA</li>
+            </ul>
+            <div class="icon-strip" aria-label="Tools used at eneye">
+                <div class="tool-icon"><img src="../assets/icons/AWSS3.png" alt="AWS S3"></div>
+                <div class="tool-icon"><img src="../assets/icons/AWSlambda.png" alt="AWS Lambda"></div>
+                <div class="tool-icon"><img src="../assets/icons/plotly.png" alt="Plotly"></div>
+            </div>
         </section>
 
         <section>
@@ -233,7 +279,7 @@
     </div>
 
     <footer>
-        <p>&copy; 2025 Shinnosuke Yagi</p>
+        <p>&copy; 2026 Shinnosuke Yagi</p>
     </footer>
 </body>
 </html>
