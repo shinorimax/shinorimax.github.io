@@ -36,20 +36,9 @@
     }
 }
 
-<<<<<<< HEAD
-/* Navigation */
-nav ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-=======
 html{
     scroll-behavior: smooth;
     scroll-padding-top: 92px;
->>>>>>> e32a137983fd8bdc85cc739eb1e47abfdea0343d
 }
 
 *, *::before, *::after{
@@ -100,21 +89,12 @@ button:focus-visible{
     padding-inline: 0 !important;
 }
 
-<<<<<<< HEAD
-/* Footer */
-footer {
-    background-color: #004d4d; /* Dark teal */
-    color: white;
-    text-align: center;
-    padding: 10px;
-    margin-top: 40px;
-=======
 header{
     position: sticky !important;
     top: 0;
     z-index: 50;
-    background: rgba(255,255,255,.86) !important;
-    color: var(--text) !important;
+    background: linear-gradient(135deg, var(--primary-700), var(--primary)) !important;
+    color: #fff !important;
     border-bottom: 1px solid var(--border);
     box-shadow: 0 12px 30px rgba(23,32,51,.08) !important;
     backdrop-filter: blur(16px);
@@ -122,7 +102,7 @@ header{
 
 @media (prefers-color-scheme: dark){
     header{
-        background: rgba(11,17,23,.84) !important;
+        background: linear-gradient(135deg, var(--primary-700), var(--primary)) !important;
     }
 }
 
@@ -133,20 +113,20 @@ header .wrap{
 }
 
 header h1{
-    color: var(--text) !important;
+    color: #fff !important;
     font-size: clamp(1.1rem, 1.2vw + .75rem, 1.55rem) !important;
     line-height: 1.15 !important;
     letter-spacing: 0 !important;
 }
 
 header h1 a{
-    color: inherit !important;
+    color: #fff !important;
     text-decoration: none !important;
 }
 
 header h1 a:hover,
 header h1 a:focus-visible{
-    color: var(--primary-700) !important;
+    color: #fff !important;
 }
 
 nav ul{
@@ -162,7 +142,7 @@ nav ul li a{
     padding: 7px 12px !important;
     border: 1px solid transparent;
     border-radius: 999px;
-    color: var(--text) !important;
+    color: #fff !important;
     font-weight: 700 !important;
     font-size: .94rem;
     letter-spacing: 0 !important;
@@ -171,9 +151,9 @@ nav ul li a{
 
 nav ul li a:hover,
 nav ul li a:focus-visible{
-    color: var(--primary-700) !important;
-    background: rgba(15,139,141,.10);
-    border-color: rgba(15,139,141,.22);
+    color: #fff !important;
+    background: rgba(255,255,255,.14);
+    border-color: rgba(255,255,255,.28);
 }
 
 nav ul li a::after{
@@ -197,6 +177,30 @@ section,
 section{
     margin-block: 26px !important;
     padding: clamp(22px, 2.4vw, 36px) !important;
+}
+
+.memo-hero{
+    background:
+        linear-gradient(135deg, rgba(89,210,255,.12), transparent 36%),
+        linear-gradient(315deg, rgba(91,118,255,.16), transparent 40%),
+        #071017 !important;
+    border-color: rgba(255,255,255,.10) !important;
+}
+
+.memo-hero h2{
+    color: #eaf7f5 !important;
+}
+
+.memo-hero p{
+    color: #c8dad8 !important;
+}
+
+.memo-stage{
+    background:
+        linear-gradient(135deg, rgba(89,210,255,.10), transparent 34%),
+        linear-gradient(315deg, rgba(91,118,255,.12), transparent 38%),
+        #08121a !important;
+    border-color: rgba(255,255,255,.10) !important;
 }
 
 .project-container{
@@ -415,5 +419,4 @@ footer p{
     body:has(a[href="mailto:syagi2@stanford.edu"]) section.wrap{
         width: min(100% - 32px, 920px) !important;
     }
->>>>>>> e32a137983fd8bdc85cc739eb1e47abfdea0343d
 }

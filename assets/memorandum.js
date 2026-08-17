@@ -46,6 +46,16 @@
         return entries.find((entry) => entry.id === id);
     }
 
+    function escapeHtml(value) {
+        return String(value).replace(/[&<>"']/g, (character) => ({
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            "\"": "&quot;",
+            "'": "&#39;"
+        }[character]));
+    }
+
     function lineKey(a, b) {
         return [a, b].sort().join("--");
     }
@@ -103,9 +113,9 @@
                     type="button"
                     data-id="${entry.id}"
                     style="left:${entry.x}%; top:${entry.y}%; --star-color:${color};"
-                    aria-label="${entry.question}">
+                    aria-label="${escapeHtml(entry.question)}">
                     <span class="memo-star-core"></span>
-                    <span class="memo-star-label">${entry.question}</span>
+                    <span class="memo-star-label">${escapeHtml(entry.question)}</span>
                 </button>
             `;
         }).join("");
@@ -133,14 +143,21 @@
         const related = selected.related
             .map(entryById)
             .filter(Boolean)
-            .map((entry) => `<button type="button" data-related="${entry.id}">${entry.question}</button>`)
+            .map((entry) => `<button type="button" data-related="${entry.id}">${escapeHtml(entry.question)}</button>`)
             .join("");
+        const googleSearchUrl = `https://www.google.com/search?q=${encodeURIComponent(selected.question)}`;
 
         detail.innerHTML = `
-            <div class="memo-detail-kicker">${categoryLabels[selected.category] || selected.category} / ${selected.date}</div>
-            <h2>${selected.question}</h2>
-            <p>${selected.answer}</p>
-            <div class="memo-source">Source: ${selected.source}</div>
+            <div class="memo-detail-kicker">${escapeHtml(categoryLabels[selected.category] || selected.category)} / ${escapeHtml(selected.date)}</div>
+            <h2>${escapeHtml(selected.question)}</h2>
+            <p>${escapeHtml(selected.answer)}</p>
+            <div class="memo-source">Source: ${escapeHtml(selected.source)}</div>
+            <div class="memo-actions">
+                <a class="memo-web" href="${googleSearchUrl}" target="_blank" rel="noopener" data-web-search>
+                    <span aria-hidden="true">🔎</span>
+                    <span>Look up on web</span>
+                </a>
+            </div>
             <div class="memo-related">
                 ${related ? `<h3>Nearby notes</h3>${related}` : ""}
             </div>
@@ -152,6 +169,14 @@
                 render();
             });
         });
+
+        const webSearch = detail.querySelector("[data-web-search]");
+        if (webSearch) {
+            webSearch.addEventListener("click", () => {
+                if (!navigator.clipboard) return;
+                navigator.clipboard.writeText(selected.question).catch(() => {});
+            });
+        }
     }
 
     function renderCount(visible) {
