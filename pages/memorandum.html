@@ -152,7 +152,7 @@
 
         .memo-controls{
             display:grid;
-            grid-template-columns:minmax(220px, 1fr) auto;
+            grid-template-columns:minmax(220px, 1fr) auto auto;
             gap:14px;
             align-items:center;
             margin-top:26px;
@@ -184,6 +184,19 @@
         .memo-random:hover{
             transform:translateY(-2px);
             box-shadow:0 16px 32px rgba(255,215,168,.25);
+        }
+        .memo-language{
+            border:1px solid rgba(255,255,255,.22);
+            color:#eef8f8;
+            background:rgba(255,255,255,.08);
+            border-radius:999px;
+            padding:11px 14px;
+            cursor:pointer;
+            font-weight:800;
+            white-space:nowrap;
+        }
+        .memo-language:hover{
+            background:rgba(255,255,255,.16);
         }
         .memo-filters{
             display:flex;
@@ -487,15 +500,16 @@
             <div class="wrap">
                 <div class="memo-title">
                     <div>
-                        <h2>Memorandum Constellation</h2>
-                        <p>A living map of small questions, everyday trivia, and useful fragments I want to remember.</p>
+                        <h2 data-i18n="heroTitle">Memorandum Constellation</h2>
+                        <p data-i18n="heroDescription">A living map of small questions, everyday trivia, and useful fragments I want to remember.</p>
                     </div>
                     <div class="memo-count" data-count>0 notes</div>
                 </div>
 
-                <div class="memo-controls" aria-label="Memorandum controls">
+                <div class="memo-controls" aria-label="Memorandum controls" data-i18n-aria="controlsLabel">
                     <input class="memo-search" data-search type="search" placeholder="Search questions, answers, topics" />
-                    <button class="memo-random" data-random type="button">Random note</button>
+                    <button class="memo-random" data-random type="button" data-i18n="randomNote">Random note</button>
+                    <button class="memo-language" data-language-toggle type="button" aria-pressed="false">日本語</button>
                 </div>
                 <div class="memo-filters" data-filters aria-label="Topic filters"></div>
             </div>

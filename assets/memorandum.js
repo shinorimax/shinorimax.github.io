@@ -3,16 +3,53 @@
     const state = {
         selectedId: entries[0] ? entries[0].id : null,
         query: "",
-        category: "all"
+        category: "all",
+        language: "en"
     };
 
-    const categoryLabels = {
-        all: "All",
-        games: "Games",
-        tech: "Tech",
-        science: "Science",
-        language: "Language",
-        nature: "Nature"
+    const copy = {
+        en: {
+            all: "All",
+            games: "Games",
+            tech: "Tech",
+            science: "Science",
+            language: "Language",
+            nature: "Nature",
+            heroTitle: "Memorandum Constellation",
+            heroDescription: "A living map of small questions, everyday trivia, and useful fragments I want to remember.",
+            controlsLabel: "Memorandum controls",
+            searchPlaceholder: "Search questions, answers, topics",
+            randomNote: "Random note",
+            languageToggle: "日本語",
+            source: "Source",
+            nearbyNotes: "Nearby notes",
+            lookUp: "Look up on web",
+            noMatches: "No notes match this view yet.",
+            note: "note",
+            notes: "notes",
+            sharedTerms: "Shared terms"
+        },
+        ja: {
+            all: "すべて",
+            games: "ゲーム",
+            tech: "技術",
+            science: "科学",
+            language: "言語",
+            nature: "自然",
+            heroTitle: "Memorandum Constellation",
+            heroDescription: "小さな疑問、日常の豆知識、覚えておきたい断片をつなぐ生きた地図。",
+            controlsLabel: "メモランダムの操作",
+            searchPlaceholder: "質問、回答、トピックを検索",
+            randomNote: "ランダム表示",
+            languageToggle: "English",
+            source: "出典",
+            nearbyNotes: "近くのノート",
+            lookUp: "ウェブで調べる",
+            noMatches: "この表示に一致するノートはありません。",
+            note: "件",
+            notes: "件",
+            sharedTerms: "共通語"
+        }
     };
 
     const categoryColors = {
@@ -30,6 +67,7 @@
     const searchInput = document.querySelector("[data-search]");
     const randomButton = document.querySelector("[data-random]");
     const countLabel = document.querySelector("[data-count]");
+    const languageToggle = document.querySelector("[data-language-toggle]");
     const stopWords = new Set([
         "a", "about", "after", "again", "all", "also", "am", "an", "and", "any", "are", "as", "at",
         "be", "because", "been", "being", "between", "but", "by", "can", "could", "did", "do", "does",
@@ -43,7 +81,14 @@
     ]);
 
     function matchesEntry(entry) {
-        const text = `${entry.question} ${entry.answer} ${entry.category}`.toLowerCase();
+        const text = [
+            entry.question,
+            entry.answer,
+            entry.questionJa,
+            entry.answerJa,
+            entry.category,
+            label(entry.category)
+        ].join(" ").toLowerCase();
         const matchesQuery = !state.query || text.includes(state.query);
         const matchesCategory = state.category === "all" || entry.category === state.category;
         return matchesQuery && matchesCategory;
@@ -55,6 +100,31 @@
 
     function entryById(id) {
         return entries.find((entry) => entry.id === id);
+    }
+
+    function label(key) {
+        return copy[state.language][key] || copy.en[key] || key;
+    }
+
+    function questionFor(entry) {
+        return state.language === "ja" && entry.questionJa ? entry.questionJa : entry.question;
+    }
+
+    function answerFor(entry) {
+        return state.language === "ja" && entry.answerJa ? entry.answerJa : entry.answer;
+    }
+
+    function updateStaticText() {
+        document.documentElement.lang = state.language === "ja" ? "ja" : "en";
+        document.querySelectorAll("[data-i18n]").forEach((element) => {
+            element.textContent = label(element.dataset.i18n);
+        });
+        document.querySelectorAll("[data-i18n-aria]").forEach((element) => {
+            element.setAttribute("aria-label", label(element.dataset.i18nAria));
+        });
+        searchInput.placeholder = label("searchPlaceholder");
+        languageToggle.textContent = label("languageToggle");
+        languageToggle.setAttribute("aria-pressed", String(state.language === "ja"));
     }
 
     function clamp(value, min, max) {
@@ -292,7 +362,7 @@
         const categories = ["all"].concat(Array.from(new Set(entries.map((entry) => entry.category))));
         filterBar.innerHTML = categories.map((category) => {
             const active = state.category === category ? "is-active" : "";
-            return `<button class="memo-filter ${active}" type="button" data-category="${category}">${categoryLabels[category] || category}</button>`;
+            return `<button class="memo-filter ${active}" type="button" data-category="${category}">${label(category)}</button>`;
         }).join("");
 
         filterBar.querySelectorAll("button").forEach((button) => {
@@ -324,10 +394,10 @@
 
                 const active = entry.id === state.selectedId || related.id === state.selectedId ? " is-active" : "";
                 const sharedTerms = entry.sharedTerms?.[related.id] || [];
-                const label = sharedTerms.length ? `Shared terms: ${sharedTerms.join(", ")}` : "";
+                const titleLabel = sharedTerms.length ? `${label("sharedTerms")}: ${sharedTerms.join(", ")}` : "";
                 lines.push(`
                     <line class="memo-line${active}" x1="${entry.x}%" y1="${entry.y}%" x2="${related.x}%" y2="${related.y}%">
-                        ${label ? `<title>${escapeHtml(label)}</title>` : ""}
+                        ${titleLabel ? `<title>${escapeHtml(titleLabel)}</title>` : ""}
                     </line>
                 `);
             });
@@ -341,15 +411,16 @@
             const selected = entry.id === state.selectedId ? " is-selected" : "";
             const related = entry.related.includes(state.selectedId) ? " is-related" : "";
             const color = categoryColors[entry.category] || "#ffffff";
+            const question = questionFor(entry);
             return `
                 <button
                     class="memo-star${selected}${related}"
                     type="button"
                     data-id="${entry.id}"
                     style="left:${entry.x}%; top:${entry.y}%; --star-color:${color};"
-                    aria-label="${escapeHtml(entry.question)}">
+                    aria-label="${escapeHtml(question)}">
                     <span class="memo-star-core"></span>
-                    <span class="memo-star-label">${escapeHtml(entry.question)}</span>
+                    <span class="memo-star-label">${escapeHtml(question)}</span>
                 </button>
             `;
         }).join("");
@@ -369,7 +440,7 @@
         const selected = entryById(state.selectedId);
         if (!selected) {
             detail.innerHTML = `
-                <p class="memo-empty">No notes match this view yet.</p>
+                <p class="memo-empty">${escapeHtml(label("noMatches"))}</p>
             `;
             return;
         }
@@ -379,25 +450,27 @@
             .filter(Boolean)
             .map((entry) => {
                 const terms = selected.sharedTerms?.[entry.id] || [];
-                const title = terms.length ? `Shared terms: ${terms.join(", ")}` : "";
-                return `<button type="button" data-related="${entry.id}" title="${escapeHtml(title)}">${escapeHtml(entry.question)}</button>`;
+                const title = terms.length ? `${label("sharedTerms")}: ${terms.join(", ")}` : "";
+                return `<button type="button" data-related="${entry.id}" title="${escapeHtml(title)}">${escapeHtml(questionFor(entry))}</button>`;
             })
             .join("");
-        const googleSearchUrl = `https://www.google.com/search?q=${encodeURIComponent(selected.question)}`;
+        const selectedQuestion = questionFor(selected);
+        const selectedAnswer = answerFor(selected);
+        const googleSearchUrl = `https://www.google.com/search?q=${encodeURIComponent(selectedQuestion)}`;
 
         detail.innerHTML = `
-            <div class="memo-detail-kicker">${escapeHtml(categoryLabels[selected.category] || selected.category)} / ${escapeHtml(selected.date)}</div>
-            <h2>${escapeHtml(selected.question)}</h2>
-            <p>${escapeHtml(selected.answer)}</p>
-            <div class="memo-source">Source: ${escapeHtml(selected.source)}</div>
+            <div class="memo-detail-kicker">${escapeHtml(label(selected.category))} / ${escapeHtml(selected.date)}</div>
+            <h2>${escapeHtml(selectedQuestion)}</h2>
+            <p>${escapeHtml(selectedAnswer)}</p>
+            <div class="memo-source">${escapeHtml(label("source"))}: ${escapeHtml(selected.source)}</div>
             <div class="memo-actions">
                 <a class="memo-web" href="${googleSearchUrl}" target="_blank" rel="noopener" data-web-search>
                     <span aria-hidden="true">🔎</span>
-                    <span>Look up on web</span>
+                    <span>${escapeHtml(label("lookUp"))}</span>
                 </a>
             </div>
             <div class="memo-related">
-                ${related ? `<h3>Nearby notes</h3>${related}` : ""}
+                ${related ? `<h3>${escapeHtml(label("nearbyNotes"))}</h3>${related}` : ""}
             </div>
         `;
 
@@ -412,13 +485,17 @@
         if (webSearch) {
             webSearch.addEventListener("click", () => {
                 if (!navigator.clipboard) return;
-                navigator.clipboard.writeText(selected.question).catch(() => {});
+                navigator.clipboard.writeText(selectedQuestion).catch(() => {});
             });
         }
     }
 
     function renderCount(visible) {
-        const note = visible.length === 1 ? "note" : "notes";
+        if (state.language === "ja") {
+            countLabel.textContent = `${visible.length}${label("notes")}`;
+            return;
+        }
+        const note = visible.length === 1 ? label("note") : label("notes");
         countLabel.textContent = `${visible.length} ${note}`;
     }
 
@@ -426,6 +503,7 @@
         const visible = filteredEntries();
         const visibleIds = new Set(visible.map((entry) => entry.id));
 
+        updateStaticText();
         renderFilters();
         renderLines(visibleIds);
         renderStars(visible);
@@ -453,6 +531,11 @@
         if (!visible.length) return;
         const next = visible[Math.floor(Math.random() * visible.length)];
         state.selectedId = next.id;
+        render();
+    });
+
+    languageToggle.addEventListener("click", () => {
+        state.language = state.language === "en" ? "ja" : "en";
         render();
     });
 

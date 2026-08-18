@@ -2,7 +2,9 @@ window.memorandumEntries = [
     {
         id: "steam-dx",
         question: "What does DX mean when opening games on Steam?",
+        questionJa: "Steamでゲームを起動するときのDXとは何ですか？",
         answer: "DX usually means DirectX, Microsoft's family of graphics and multimedia APIs for Windows games. A Steam launch option may ask whether to start a game in DX11, DX12, or another DirectX mode. The choice changes which graphics API the game uses to talk to the GPU driver. DX12 can offer more modern features and lower-level control, but it may also expose driver bugs or run worse on some hardware. DX11 is often older, more stable, and sometimes smoother for specific games. If one mode crashes, stutters, or has visual glitches, trying the other is a reasonable troubleshooting step.",
+        answerJa: "DXはたいていDirectXのことです。DirectXは、Windows向けゲームがグラフィックや音声などを扱うためのMicrosoftのAPI群です。Steamの起動オプションでDX11やDX12を選ぶ場合、ゲームがGPUドライバーとやり取りするために使うグラフィックAPIを変えていることになります。DX12は新しい機能や低レベルの制御を使える一方で、環境によってはドライバーの不具合や動作の重さが出ることもあります。DX11は古い分、安定している場合があります。クラッシュ、カクつき、表示崩れがあるときは別のDXモードを試す価値があります。",
         category: "games",
         date: "2026-08-17",
         source: "Personal lookup",
@@ -13,7 +15,9 @@ window.memorandumEntries = [
     {
         id: "directx-api",
         question: "What is DirectX?",
+        questionJa: "DirectXとは何ですか？",
         answer: "DirectX is a collection of Microsoft APIs that help Windows software communicate with hardware for graphics, sound, input, and multimedia. In games, people usually mean Direct3D, the part of DirectX that sends rendering work to the graphics card. Instead of every game developer writing separate code for every GPU model, the game can use DirectX as a common interface, while the GPU driver translates those requests for the specific hardware. Different versions, such as DirectX 11 and DirectX 12, expose different performance models and features. That is why a launch option can affect frame rate, stability, and visuals.",
+        answerJa: "DirectXは、Windows上のソフトウェアがグラフィック、音声、入力、マルチメディア用のハードウェアとやり取りするためのMicrosoftのAPI群です。ゲームでDirectXと言う場合、多くは描画処理をグラフィックカードへ送るDirect3Dを指します。開発者がGPUごとに個別のコードを書く代わりに、ゲームはDirectXという共通の窓口を使い、GPUドライバーがそれを実際のハードウェア向けの命令に変換します。DirectX 11とDirectX 12のようにバージョンが違うと、使える機能や性能の出方も変わります。",
         category: "tech",
         date: "2026-08-17",
         source: "Personal lookup",
@@ -24,7 +28,9 @@ window.memorandumEntries = [
     {
         id: "gpu-driver",
         question: "Why do GPU drivers matter for games?",
+        questionJa: "ゲームでGPUドライバーが重要なのはなぜですか？",
         answer: "GPU drivers are the software layer between a game, a graphics API such as DirectX, and the physical graphics card. The game sends rendering commands, shader programs, memory requests, and display instructions; the driver turns those into hardware-specific work the GPU can execute. Driver updates can improve performance for new games, fix crashes, repair visual bugs, and add support for features such as ray tracing or upscaling. They can also occasionally introduce regressions, which is why some players roll back to an older driver. For gaming, the driver is part translator, part scheduler, and part compatibility patch.",
+        answerJa: "GPUドライバーは、ゲーム、DirectXのようなグラフィックAPI、そして実際のグラフィックカードの間にあるソフトウェア層です。ゲームは描画命令、シェーダー、メモリ要求、表示に関する指示を送り、ドライバーはそれをGPUが実行できるハードウェア固有の処理に変換します。ドライバー更新によって新しいゲームの性能が上がったり、クラッシュや表示バグが直ったり、レイトレーシングやアップスケーリングなどの機能が使えるようになることがあります。一方で更新が不具合を生むこともあるため、古い版へ戻す人もいます。",
         category: "tech",
         date: "2026-08-17",
         source: "Personal lookup",
@@ -35,7 +41,9 @@ window.memorandumEntries = [
     {
         id: "ac-dc",
         question: "What is the difference between AC and DC?",
+        questionJa: "交流（AC）と直流（DC）の違いは何ですか？",
         answer: "DC, or direct current, flows in one direction through a circuit, like the current from a battery powering a flashlight. AC, or alternating current, reverses direction periodically, usually many times per second. In the United States, household AC changes direction 60 times per second, or 60 hertz. The practical difference matters because AC voltage is easy to raise or lower with transformers, which made long-distance power transmission efficient. DC is common inside electronics, batteries, solar panels, and USB devices. Many devices plugged into a wall outlet immediately convert AC into DC before using it.",
+        answerJa: "DC、つまり直流は、電流が回路の中を一方向に流れる方式です。懐中電灯を動かす電池の電流が典型例です。AC、つまり交流は、電流の向きが周期的に反転します。アメリカの家庭用電源では1秒間に60回向きが変わり、60ヘルツと呼ばれます。交流は変圧器で電圧を上げ下げしやすく、長距離送電で損失を減らせるため電力網に向いています。直流は電子機器、電池、太陽光パネル、USB機器などでよく使われ、壁のコンセントにつないだ機器も内部では直流に変換することが多いです。",
         category: "science",
         date: "2026-08-17",
         source: "Personal lookup",
@@ -46,7 +54,9 @@ window.memorandumEntries = [
     {
         id: "voltage-current",
         question: "What is the difference between voltage and current?",
+        questionJa: "電圧と電流の違いは何ですか？",
         answer: "Voltage is electric potential difference: it describes how much energy is available per unit of charge between two points. Current is the rate at which electric charge actually flows through a circuit. A common analogy is water: voltage is like pressure, while current is like the amount of water moving through a pipe each second. Resistance determines how much current flows for a given voltage. High voltage does not always mean high current, but dangerous situations often involve enough voltage to push current through the body. Electronics design depends on managing both quantities together, not treating them as interchangeable.",
+        answerJa: "電圧は電位差で、2点の間で電荷1単位あたりどれだけのエネルギー差があるかを表します。電流は、実際に電荷が回路を流れる速さです。よくある比喩では、電圧は水圧、電流はパイプを毎秒どれだけの水が流れるかに近いものです。抵抗があるため、同じ電圧でも流れる電流は回路によって変わります。高電圧だから必ず大電流とは限りませんが、人体に電流を押し流せるだけの電圧があると危険です。電子回路では電圧と電流をセットで考える必要があります。",
         category: "science",
         date: "2026-08-17",
         source: "Personal lookup",
@@ -57,7 +67,9 @@ window.memorandumEntries = [
     {
         id: "wall-outlet",
         question: "Why do homes use AC power from outlets?",
+        questionJa: "家庭のコンセントで交流電源が使われるのはなぜですか？",
         answer: "Homes use AC power largely because the electrical grid was built around the advantages of alternating current. AC can be stepped up to very high voltages for transmission over long distances, which reduces energy lost as heat in power lines. Near homes, transformers step the voltage back down to safer, useful levels. That historical and engineering advantage made AC the standard for grid distribution. Inside a home, many appliances can use AC directly, such as motors and heaters. Modern electronics, however, usually convert outlet AC into lower-voltage DC using power adapters or internal power supplies.",
+        answerJa: "家庭で交流が使われる大きな理由は、電力網が交流の利点を前提に発展したからです。交流は変圧器で高電圧にしやすく、長距離送電のときに電線で熱として失われるエネルギーを減らせます。家庭の近くでは変圧器で安全で使いやすい電圧まで下げます。この歴史的・工学的な利点により、交流が配電の標準になりました。家庭内ではモーターやヒーターのように交流を直接使う機器もありますが、現代の電子機器の多くはアダプターや内部電源で低電圧の直流に変換して使います。",
         category: "science",
         date: "2026-08-17",
         source: "Personal lookup",
@@ -68,7 +80,9 @@ window.memorandumEntries = [
     {
         id: "eta-origin",
         question: "What does ETA stand for?",
+        questionJa: "ETAは何の略ですか？",
         answer: "ETA stands for estimated time of arrival. It originally feels most natural in travel contexts: a train, flight, ship, delivery driver, or friend on the way can all have an ETA. The phrase has broadened into a general estimate for when something will finish, arrive, or become available. In computing, someone might ask for the ETA on a download, model training run, package delivery, or data pipeline. The important part is that it is an estimate, not a guarantee. It communicates a predicted completion time based on current information, which can change as conditions change.",
+        answerJa: "ETAはestimated time of arrivalの略で、「到着予定時刻」という意味です。もともとは旅行や移動の文脈で自然に使われ、電車、飛行機、船、配達員、向かっている友人などに対してETAを尋ねることができます。今では意味が広がり、何かが完了する時刻や利用可能になる時刻の見積もりにも使われます。コンピューターの世界では、ダウンロード、モデル学習、荷物配送、データ処理の完了予定を指すこともあります。重要なのは、ETAは保証ではなく、現在の情報にもとづく予測だという点です。",
         category: "language",
         date: "2026-08-17",
         source: "Personal lookup",
@@ -79,7 +93,9 @@ window.memorandumEntries = [
     {
         id: "acronym-initialism",
         question: "What is the difference between an acronym and an initialism?",
+        questionJa: "アクロニムとイニシャリズムの違いは何ですか？",
         answer: "An acronym is an abbreviation formed from initial letters that is pronounced as a word, such as NASA, scuba, or laser. An initialism is also formed from initial letters, but each letter is pronounced separately, such as FBI, CPU, or UCLA. People often use acronym casually for both types, and that loose use is common enough that it is usually understood. The distinction is useful when talking carefully about language because pronunciation is the key difference. If the letters create a new spoken word, it is an acronym; if you read the letters one by one, it is an initialism.",
+        answerJa: "アクロニムは、複数の語の頭文字から作られ、それ自体を一つの単語のように発音する略語です。NASA、scuba、laserなどが例です。イニシャリズムも頭文字から作られますが、FBI、CPU、UCLAのように各文字を一つずつ読みます。日常会話では両方をまとめてacronymと呼ぶことも多く、それでも意味は通じます。ただし言語について正確に話すときは、発音の仕方が重要な違いになります。文字列を単語として読むならアクロニム、文字ごとに読むならイニシャリズムです。",
         category: "language",
         date: "2026-08-17",
         source: "Personal lookup",
@@ -90,7 +106,9 @@ window.memorandumEntries = [
     {
         id: "rain-smell",
         question: "What is the smell after rain called?",
+        questionJa: "雨上がりの匂いは何と呼ばれますか？",
         answer: "The smell after rain is called petrichor. It is especially noticeable when rain falls after a dry period. Part of the scent comes from plant oils that accumulate on rocks and soil, and part comes from geosmin, an earthy-smelling compound produced by certain soil microorganisms. When raindrops hit porous ground, they can trap tiny air bubbles that rise and burst, sending microscopic scented particles into the air. That is why the smell can seem to bloom suddenly right as rain begins. Petrichor is both a chemistry story and a sensory memory trigger.",
+        answerJa: "雨上がりの匂いはペトリコールと呼ばれます。特に乾いた期間のあとに雨が降ると強く感じられます。この匂いの一部は、岩や土にたまった植物由来の油分から来ており、別の一部は土壌中の微生物が作るジオスミンという土っぽい匂いの化合物に由来します。雨粒が多孔質の地面に当たると小さな気泡ができ、それがはじけることで微細な匂い成分が空気中に広がります。そのため雨が降り始めた瞬間に匂いがふわっと立つように感じられます。",
         category: "nature",
         date: "2026-08-17",
         source: "Personal lookup",
@@ -101,7 +119,9 @@ window.memorandumEntries = [
     {
         id: "geosmin",
         question: "What is geosmin?",
+        questionJa: "ジオスミンとは何ですか？",
         answer: "Geosmin is an organic compound with a strong earthy smell. It is produced by some bacteria and other microorganisms in soil, including actinomycetes, and humans can detect it at extremely low concentrations. Geosmin helps explain why freshly disturbed soil, beets, some fish, and rain after dry weather can smell earthy or mineral-like. It is not usually dangerous at the levels people notice by smell, but in drinking water it can create an unpleasant taste even when the water is otherwise safe. In nature, geosmin may also influence animal behavior by signaling moist soil or microbial activity.",
+        answerJa: "ジオスミンは、強い土のような匂いを持つ有機化合物です。放線菌を含む土壌中の一部の細菌や微生物によって作られ、人間は非常に低い濃度でも感知できます。掘り返したばかりの土、ビーツ、一部の魚、乾いた天気のあとに降る雨が土っぽく、鉱物のように匂う理由の一つがジオスミンです。人が匂いとして感じる程度では通常危険ではありませんが、飲料水に含まれると安全性に問題がなくても不快な味を生むことがあります。自然界では湿った土や微生物活動の手がかりにもなり得ます。",
         category: "nature",
         date: "2026-08-17",
         source: "Personal lookup",
@@ -112,7 +132,9 @@ window.memorandumEntries = [
     {
         id: "tf-idf",
         question: "What is TF-IDF?",
+        questionJa: "TF-IDFとは何ですか？",
         answer: "TF-IDF stands for term frequency-inverse document frequency. It is a way to score how important a word is to one document within a larger collection of documents. Term frequency increases when a word appears often in a specific document. Inverse document frequency increases when that word is rare across the whole collection. The combination gives high scores to words that are frequent in one note but uncommon overall, such as GPU, petrichor, or transformer. It gives low scores to generic words like the, and, or question. That makes TF-IDF useful for search, clustering, and finding similar text.",
+        answerJa: "TF-IDFはterm frequency-inverse document frequencyの略で、文書集合の中である単語が一つの文書にとってどれだけ重要かを点数化する方法です。TF、つまり単語頻度は、その単語が特定の文書に多く出るほど高くなります。IDF、つまり逆文書頻度は、その単語が文書集合全体では珍しいほど高くなります。この二つを組み合わせると、GPU、ペトリコール、変圧器のように特定のノートで重要で全体では珍しい語が高く評価されます。一方で、一般的すぎる語は低くなります。検索、分類、似た文章の発見に便利です。",
         category: "tech",
         date: "2026-08-17",
         source: "Personal lookup",
@@ -123,7 +145,9 @@ window.memorandumEntries = [
     {
         id: "kalshi-california-sports",
         question: "Why is sports betting on Kalshi allowed in California?",
+        questionJa: "カリフォルニアでKalshiのスポーツベッティングが可能なのはなぜですか？",
         answer: "Kalshi is generally described as available in California because it operates as a federally regulated prediction market exchange rather than a state-licensed sportsbook. Its contracts are event contracts traded on a CFTC-regulated designated contract market, so Kalshi argues that federal commodities law governs them and can preempt state gambling restrictions. That is different from ordinary sports betting apps, which need state authorization and are not legal in California. The issue is contested: regulators and courts have debated whether sports event contracts are effectively gaming and whether CFTC oversight is enough. So the short answer is federal prediction-market structure, not California sportsbook legalization.",
+        answerJa: "Kalshiがカリフォルニアで利用できると説明される理由は、州の認可を受けたスポーツブックではなく、連邦規制下の予測市場取引所として運営されているからです。Kalshiの契約は、CFTCが規制する指定契約市場で取引されるイベント契約であり、Kalshi側は連邦の商品取引法が適用され、州の賭博規制に優先し得ると主張します。これはカリフォルニアでは合法化されていない通常のスポーツベッティングアプリとは異なります。ただし、この問題は争われており、スポーツイベント契約が実質的に賭博なのか、CFTCの監督で足りるのかについて規制当局や裁判所で議論があります。",
         category: "games",
         date: "2026-08-17",
         source: "Legal/regulatory lookup",
@@ -134,7 +158,9 @@ window.memorandumEntries = [
     {
         id: "leftover-candle-wax",
         question: "What can I do with candles with wax left?",
+        questionJa: "ロウが残ったキャンドルはどう使えますか？",
         answer: "If a candle has wax left but the wick is gone or buried, you can reuse the wax instead of throwing it away. One option is to gently warm the container in a hot-water bath, remove the softened wax, and melt scraps together in a wax warmer. You can also pour melted leftover wax into a silicone mold with a new wick to make a small recycled candle. Another easy use is making wax melts for fragrance without a flame. Avoid overheating wax, never leave it unattended, and do not pour melted wax down the drain because it can harden and clog pipes.",
+        answerJa: "キャンドルにロウが残っているのに芯がなくなったり埋もれたりした場合、捨てずに再利用できます。容器を湯せんでゆっくり温め、柔らかくなったロウを取り出して、他の残りロウと一緒にワックスウォーマーで溶かす方法があります。溶かしたロウをシリコン型に入れ、新しい芯を立てれば小さな再生キャンドルも作れます。炎を使わず香りを楽しむワックスメルトにするのも簡単です。ロウを過熱しないこと、加熱中に放置しないこと、排水口に流さないことが大切です。冷えて固まり、詰まりの原因になります。",
         category: "nature",
         date: "2026-08-17",
         source: "Personal lookup",
