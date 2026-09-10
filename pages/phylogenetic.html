@@ -4,122 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Research at Palacios Lab | Shinnosuke Yagi</title>
-    <link rel="stylesheet" href="../style.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&display=swap" rel="stylesheet" />
     <style>
-        /* ---------- Design Tokens (shared) ---------- */
-        :root{
-            --bg: #f3f6f8;
-            --card-bg:#ffffff;
-            --text:#1f2937;
-            --muted:#6b7280;
-            --primary:#0b8f8f;
-            --primary-600:#0a7e7e;
-            --primary-700:#086c6c;
-            --ring: rgba(11,143,143,.35);
-            --shadow-sm: 0 2px 10px rgba(0,0,0,.06);
-            --shadow-md: 0 10px 30px rgba(0,0,0,.08);
-            --radius: 14px;
-            --radius-lg: 18px;
-            --container: 1600px;
-        }
-        @media (prefers-color-scheme: dark){
-            :root{
-                --bg: #0b1214;
-                --card-bg:#0f171a;
-                --text:#e5e7eb;
-                --muted:#9aa3ad;
-                --primary:#31c1c1;
-                --primary-600:#24b2b2;
-                --primary-700:#1aa3a3;
-                --ring: rgba(49,193,193,.45);
-                --shadow-sm: 0 2px 10px rgba(0,0,0,.35);
-                --shadow-md: 0 10px 30px rgba(0,0,0,.45);
-            }
-        }
-
-        /* ---------- Base ---------- */
-        html { scroll-behavior: smooth; }
-        *, *::before, *::after { box-sizing: border-box; }
-        body{
-            margin:0;
-            font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
-            line-height:1.65;
-            color:var(--text);
-            background:
-                radial-gradient(1200px 600px at 20% -10%, rgba(11,143,143,.10), transparent 60%),
-                radial-gradient(900px 500px at 110% 10%, rgba(11,143,143,.08), transparent 55%),
-                var(--bg);
-        }
-        a{
-            color:var(--primary-700);
-            text-decoration:none;
-            transition: color .2s ease, opacity .2s ease;
-        }
-        a:hover{ color:var(--primary); }
-        a:focus-visible{
-            outline: 3px solid var(--ring);
-            outline-offset: 2px;
-            border-radius: 6px;
-        }
-        img{ max-width:100%; height:auto; display:block; }
-
-        .wrap{
-            max-width: var(--container);
-            margin-inline:auto;
-            padding-inline: 20px;
-        }
-
-        /* ---------- Header / Nav ---------- */
-        header{
-            background: linear-gradient(135deg, var(--primary-700), var(--primary));
-            color:#fff;
-            position: sticky;
-            top: 0;
-            z-index: 50;
-            box-shadow: var(--shadow-sm);
-        }
-        header .wrap{
-            display:flex;
-            align-items:center;
-            justify-content:space-between;
-            gap: 16px;
-            padding-block: 24px;
-        }
-        header h1{
-            margin:0;
-            font-size: clamp(1.25rem, 2vw + .5rem, 1.6rem);
-            font-weight: 800;
-            letter-spacing:.3px;
-        }
-        nav ul{
-            margin:0;
-            padding:0;
-            list-style:none;
-            display:flex;
-            gap:22px;
-        }
-        nav ul li a{
-            color:#fff;
-            font-weight:600;
-            letter-spacing:.2px;
-            position:relative;
-            padding: 6px 2px;
-        }
-        nav ul li a::after{
-            content:"";
-            position:absolute;
-            left:0; bottom:-6px;
-            width:0%; height:2px;
-            background:#fff;
-            border-radius:2px;
-            transition: width .25s ease;
-            opacity:.9;
-        }
-        nav ul li a:hover::after,
-        nav ul li a:focus-visible::after{ width:100%; }
-
-        /* ---------- Page Card ---------- */
+        /* Case-study layout; theme supplied by style.css. */
         .project-container{
             background: var(--card-bg);
             border-radius: var(--radius-lg);
@@ -154,7 +40,7 @@
         .gallery-item:hover{
             transform: translateY(-3px);
             box-shadow: 0 10px 22px rgba(0,0,0,.10);
-            background: linear-gradient(0deg, rgba(11,143,143,.04), rgba(11,143,143,.04)), var(--card-bg);
+            background: linear-gradient(0deg, rgba(220,25,56,.04), rgba(220,25,56,.04)), var(--card-bg);
         }
         .gallery-item img{
             width: 100%;
@@ -181,7 +67,7 @@
             padding: 14px 16px;
             border-left: 4px solid var(--primary);
             border-radius: 10px;
-            background: linear-gradient(0deg, rgba(11,143,143,.06), rgba(11,143,143,.06)), var(--card-bg);
+            background: linear-gradient(0deg, rgba(220,25,56,.06), rgba(220,25,56,.06)), var(--card-bg);
             overflow-x: auto;
         }
         .formula-block code{
@@ -245,41 +131,28 @@
         .button:hover{
             background: var(--primary-600);
             transform: translateY(-1px);
-            box-shadow: 0 8px 20px rgba(11,143,143,.25);
-        }
-
-        /* ---------- Footer ---------- */
-        footer{
-            background: linear-gradient(180deg, var(--primary-700), var(--primary));
-            color:#eef8f8;
-            text-align:center;
-            padding: 18px;
-            border-top-left-radius: var(--radius);
-            border-top-right-radius: var(--radius);
-            box-shadow: var(--shadow-sm);
-            margin-top: 40px;
-        }
-        footer p{ margin:0; font-size: .95rem; letter-spacing:.2px; }
-
-        @media (prefers-reduced-motion: reduce){
-            *{ transition: none !important; }
+            box-shadow: 0 8px 20px rgba(220,25,56,.25);
         }
     </style>
+
+    <meta name="theme-color" content="#111111" />
+    <meta name="description" content="Research at Stanford’s Palacios Lab: validating a phylogenetic tree distance metric and using tree shape to detect natural selection." />
+    <link rel="canonical" href="https://shinorimax.github.io/pages/phylogenetic.html" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;0,900;1,800;1,900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../style.css?v=e31525b8bf" />
 </head>
-<body>
-    <header>
-        <div class="wrap">
-            <h1><a href="../index.html">Research at Palacios Lab</a></h1>
-            <nav>
-                <ul>
-                    <li><a href="../index.html">Home</a></li>
-                    <li><a href="projects.html">Projects</a></li>
-                    <li><a href="memorandum.html"><span aria-hidden="true">✨</span> Memorandum</a></li>
-                    <li><a href="contact.html">Contact</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
+<body class="detail-page">
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header"><div class="wrap">
+        <a class="brand" href="../index.html?v=portfolio-6" aria-label="Shinnosuke Yagi, home"><span class="brand-mark" aria-hidden="true">SY</span><span>Shinnosuke Yagi<span class="brand-caption">Data science &amp; statistics</span></span></a>
+        <nav aria-label="Main navigation"><ul><li><a href="../index.html?v=portfolio-6">Home</a></li>
+<li><a href="projects.html?v=portfolio-6" aria-current="page">Projects</a></li>
+<li><a href="memorandum.html?v=portfolio-6">Memorandum</a></li>
+<li><a href="contact.html?v=portfolio-6">Contact</a></li></ul></nav>
+    </div></header>
+<main id="main" tabindex="-1"><div class="detail-heading wrap"><p class="eyebrow"><a href="projects.html?v=portfolio-6">← All projects</a></p><h1>Research at Palacios Lab</h1></div>
 
     <div class="project-container wrap">
         <section>
@@ -333,42 +206,42 @@
             <h2>Key Figures</h2>
             <div class="figure-grid">
                 <figure class="figure-card">
-                    <img src="../assets/F-matrix.png" alt="F-matrix encoding of a ranked genealogy">
+                    <img loading="lazy" src="../assets/F-matrix.png" alt="F-matrix encoding of a ranked genealogy">
                     <figcaption>
                         <strong>F-matrix representation.</strong>
                         A ranked genealogy can be converted into an F-matrix, where the matrix entries summarize how lineages persist through ordered coalescent intervals. This turns a tree shape into a structured numerical object, making it possible to compare local genealogies with standard matrix distances. Representation proposed by <a href="https://juliapalacios.github.io/research/publications/1922851117.full.pdf">Kim et al. (2020)</a>.
                     </figcaption>
                 </figure>
                 <figure class="figure-card">
-                    <img src="../assets/ROC_AUC_s0.01_v1.png" alt="Genome-wide ROC curves for selection detection">
+                    <img loading="lazy" src="../assets/ROC_AUC_s0.01_v1.png" alt="Genome-wide ROC curves for selection detection">
                     <figcaption>
                         <strong>Genome-wide detection.</strong>
                         Each curve shows how well a statistic separates neutral simulations from simulations with a selective sweep. Higher curves and larger AUC values mean better classification. Here, distance-to-neutral F-matrix statistics are compared with common baselines, including bsfs, Tajima's D, btree, and Colless, for selection strength s = 0.01 at derived-allele frequencies 0.25, 0.5, and 0.75.
                     </figcaption>
                 </figure>
                 <figure class="figure-card">
-                    <img src="../assets/distance_vs_location_v1.png" alt="Distance-to-neutral profiles across genomic position">
+                    <img loading="lazy" src="../assets/distance_vs_location_v1.png" alt="Distance-to-neutral profiles across genomic position">
                     <figcaption>
                         <strong>Localizing a simulated sweep.</strong>
                         The x-axis is genomic position and the y-axis is the per-tree D<sup>(1)</sup><sub>F</sub> distance from the neutral reference. A selective sweep should make nearby local genealogies look less neutral, so the expected pattern is a bump around the selected site. The elevation becomes clearer as the beneficial allele reaches higher frequency.
                     </figcaption>
                 </figure>
                 <figure class="figure-card">
-                    <img src="../assets/p-val_vs_location_v1.png" alt="Empirical p-value profiles across genomic position">
+                    <img loading="lazy" src="../assets/p-val_vs_location_v1.png" alt="Empirical p-value profiles across genomic position">
                     <figcaption>
                         <strong>Position-wise significance.</strong>
                         This view converts the distance profile into empirical p-values by comparing each genomic bin with neutral simulations from the same bin. Low values mark positions where the observed distance is unusually large under neutrality. The dip near the selected site shows that the method can turn tree-shape distortion into a localized significance signal.
                     </figcaption>
                 </figure>
                 <figure class="figure-card">
-                    <img src="../assets/chr2_diff_in_diff_CEU_bin_100000.png" alt="Difference-in-differences localization for CEU near LCT">
+                    <img loading="lazy" src="../assets/chr2_diff_in_diff_CEU_bin_100000.png" alt="Difference-in-differences localization for CEU near LCT">
                     <figcaption>
                         <strong>LCT in CEU.</strong>
                         In real data, raw distance-to-neutral profiles vary across the chromosome for reasons unrelated to one selected locus. This contrast subtracts a shared all-population background from the CEU profile, leaving population-specific deviations. After correction, the strongest localized signal concentrates near LCT, a known target of selection in Europeans.
                     </figcaption>
                 </figure>
                 <figure class="figure-card">
-                    <img src="../assets/chr2_diff_in_diff_CHB_bin_100000.png" alt="Difference-in-differences localization for CHB near EDAR">
+                    <img loading="lazy" src="../assets/chr2_diff_in_diff_CHB_bin_100000.png" alt="Difference-in-differences localization for CHB near EDAR">
                     <figcaption>
                         <strong>EDAR in CHB.</strong>
                         The same background-correction strategy is applied to CHB on chromosome 2. The resulting contrast highlights where CHB genealogies depart from the shared chromosome-wide background. The localized signal near EDAR matches a well-known selection target in East Asian populations.
@@ -380,18 +253,16 @@
         <section>
             <h2>Publication</h2>
             <p>Coming Soon ...</p>
-            <!-- <a href="../assets/Assessment of Recharge Potential in the Kings Subbasin, Central Valley California (final).pdf" target="_blank" class="button">View Report (PDF)</a> -->
+            <!-- <a href="../assets/Assessment of Recharge Potential in the Kings Subbasin, Central Valley California (final).pdf" target="_blank" rel="noopener noreferrer" class="button">View Report (PDF)</a> -->
         </section>
 
         <section>
             <h2>GitHub Repository</h2>
             <p>Find the complete code and implementation details on GitHub:</p>
-            <a href="https://github.com/shinorimax/Selective-Sweep-Simulation" target="_blank" class="button">View on GitHub</a>
+            <a href="https://github.com/shinorimax/Selective-Sweep-Simulation" target="_blank" rel="noopener noreferrer" class="button">View on GitHub</a>
         </section>
     </div>
 
-    <footer>
-        <p>&copy; 2026 Shinnosuke Yagi</p>
-    </footer>
+    </main><footer class="site-footer"><div class="wrap"><p>© 2026 Shinnosuke Yagi</p><div class="footer-links"><a href="https://github.com/shinorimax">GitHub ↗</a><a href="https://www.linkedin.com/in/shinnosuke-yagi-1a2914230/">LinkedIn ↗</a><a href="mailto:syagi2@stanford.edu">Email ↗</a></div><a href="#main">Back to top ↑</a></div></footer>
 </body>
 </html>

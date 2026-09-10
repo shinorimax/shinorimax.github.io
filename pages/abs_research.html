@@ -4,143 +4,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ABS vs. Rulebook — What Robo-Umps Would Say in 2025 | Shinnosuke Yagi</title>
-  <link rel="stylesheet" href="../style.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&display=swap" rel="stylesheet" />
   <meta name="description" content="Simulating a counterfactual 2025 where every taken pitch is adjudicated by MLB’s ABS. How would calls change relative to umpires and the rulebook zone?" />
   <meta property="og:title" content="ABS vs. Rulebook — What Robo-Umps Would Say in 2025" />
   <meta property="og:description" content="Confusion matrices, heatmaps, and player rankings for how ABS would reshape balls and strikes." />
   <meta property="og:type" content="article" />
 
   <style>
-    /* ---------- Design Tokens (shared) ---------- */
-    :root{
-      --bg: #f3f6f8;
-      --card-bg:#ffffff;
-      --text:#1f2937;
-      --muted:#6b7280;
-      --primary:#0b8f8f;
-      --primary-600:#0a7e7e;
-      --primary-700:#086c6c;
-      --ring: rgba(11,143,143,.35);
-      --shadow-sm: 0 2px 10px rgba(0,0,0,.06);
-      --shadow-md: 0 10px 30px rgba(0,0,0,.08);
-      --radius: 14px;
-      --radius-lg: 18px;
-      --container: 1600px;
-      --table-border: rgba(0,0,0,.12);
-      --table-stripe: rgba(0,0,0,.035);
-    }
-    @media (prefers-color-scheme: dark){
-      :root{
-        --bg: #0b1214;
-        --card-bg:#0f171a;
-        --text:#e5e7eb;
-        --muted:#9aa3ad;
-        --primary:#31c1c1;
-        --primary-600:#24b2b2;
-        --primary-700:#1aa3a3;
-        --ring: rgba(49,193,193,.45);
-        --shadow-sm: 0 2px 10px rgba(0,0,0,.35);
-        --shadow-md: 0 10px 30px rgba(0,0,0,.45);
-        --table-border: rgba(255,255,255,.16);
-        --table-stripe: rgba(255,255,255,.04);
-      }
-    }
-
-    /* ---------- Base ---------- */
-    html { scroll-behavior: smooth; }
-    *, *::before, *::after { box-sizing: border-box; }
-    body{
-      margin:0;
-      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
-      line-height:1.65;
-      color:var(--text);
-      background:
-        radial-gradient(1200px 600px at 20% -10%, rgba(11,143,143,.10), transparent 60%),
-        radial-gradient(900px 500px at 110% 10%, rgba(11,143,143,.08), transparent 55%),
-        var(--bg);
-    }
-    img, video{ max-width:100%; height:auto; display:block; }
-    a{
-      color:var(--primary-700);
-      text-decoration:none;
-      transition: color .2s ease, opacity .2s ease;
-    }
-    a:hover{ color:var(--primary); }
-    a:focus-visible{
-      outline: 3px solid var(--ring);
-      outline-offset: 2px;
-      border-radius: 6px;
-    }
-    code, kbd, samp{
-      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
-      font-size: .95em;
-      background: rgba(0,0,0,.06);
-      padding: .1em .35em;
-      border-radius: 6px;
-    }
-    @media (prefers-color-scheme: dark){
-      code, kbd, samp{ background: rgba(255,255,255,.08); }
-    }
-
-    .wrap{
-      max-width: var(--container);
-      margin-inline:auto;
-      padding-inline: 20px;
-    }
-
-    /* ---------- Header / Nav ---------- */
-    header{
-      background: linear-gradient(135deg, var(--primary-700), var(--primary));
-      color:#fff;
-      position: sticky;
-      top: 0;
-      z-index: 50;
-      box-shadow: var(--shadow-sm);
-    }
-    header .wrap{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap: 16px;
-      padding-block: 24px;
-    }
-    header h1{
-      margin:0;
-      font-size: clamp(1.05rem, 1.4vw + .9rem, 1.35rem);
-      font-weight: 800;
-      letter-spacing:.3px;
-      line-height:1.25;
-    }
-    nav ul{
-      margin:0;
-      padding:0;
-      list-style:none;
-      display:flex;
-      gap:22px;
-    }
-    nav ul li a{
-      color:#fff;
-      font-weight:600;
-      letter-spacing:.2px;
-      position:relative;
-      padding: 6px 2px;
-    }
-    nav ul li a::after{
-      content:"";
-      position:absolute;
-      left:0; bottom:-6px;
-      width:0%; height:2px;
-      background:#fff;
-      border-radius:2px;
-      transition: width .25s ease;
-      opacity:.9;
-    }
-    nav ul li a:hover::after,
-    nav ul li a:focus-visible::after{ width:100%; }
-
-    /* ---------- Article Card ---------- */
-    .project-container{
+        /* Case-study layout; theme supplied by style.css. */
+        .project-container{
       background: var(--card-bg);
       border-radius: var(--radius-lg);
       box-shadow: var(--shadow-md);
@@ -220,47 +91,33 @@
     .table-wrap tbody tr:nth-child(odd){
       background: var(--table-stripe);
     }
+    </style>
 
-    /* ---------- Footer ---------- */
-    footer{
-      background: linear-gradient(180deg, var(--primary-700), var(--primary));
-      color:#eef8f8;
-      text-align:center;
-      padding: 18px;
-      border-top-left-radius: var(--radius);
-      border-top-right-radius: var(--radius);
-      box-shadow: var(--shadow-sm);
-      margin-top: 40px;
-    }
-    footer p{ margin:0; font-size: .95rem; letter-spacing:.2px; }
-
-    @media (prefers-reduced-motion: reduce){
-      *{ transition: none !important; }
-    }
-  </style>
+    <meta name="theme-color" content="#111111" />
+    <link rel="canonical" href="https://shinorimax.github.io/pages/abs_research.html" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;0,900;1,800;1,900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../style.css?v=e31525b8bf" />
 </head>
-<body>
-  <header>
-    <div class="wrap">
-      <h1><a href="../index.html">ABS vs. Rulebook — What Robo-Umps Would Say in 2025</a></h1>
-      <nav>
-        <ul>
-          <li><a href="../index.html">Home</a></li>
-          <li><a href="projects.html">Projects</a></li>
-          <li><a href="memorandum.html"><span aria-hidden="true">✨</span> Memorandum</a></li>
-          <li><a href="contact.html">Contact</a></li>
-        </ul>
-      </nav>
-    </div>
-  </header>
+<body class="detail-page">
+  <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header"><div class="wrap">
+        <a class="brand" href="../index.html?v=portfolio-6" aria-label="Shinnosuke Yagi, home"><span class="brand-mark" aria-hidden="true">SY</span><span>Shinnosuke Yagi<span class="brand-caption">Data science &amp; statistics</span></span></a>
+        <nav aria-label="Main navigation"><ul><li><a href="../index.html?v=portfolio-6">Home</a></li>
+<li><a href="projects.html?v=portfolio-6" aria-current="page">Projects</a></li>
+<li><a href="memorandum.html?v=portfolio-6">Memorandum</a></li>
+<li><a href="contact.html?v=portfolio-6">Contact</a></li></ul></nav>
+    </div></header>
+<main id="main" tabindex="-1"><div class="detail-heading wrap"><p class="eyebrow"><a href="projects.html?v=portfolio-6">← All projects</a></p><h1>ABS vs. Rulebook — What Robo-Umps Would Say in 2025</h1></div>
 
   <div class="project-container wrap">
     <!-- ARTICLE START -->
     <h2>Introduction</h2>
 
-    <p>In 2025, Major League Baseball took its first major step toward the future with the <strong>Automated Ball-Strike (ABS) system</strong>. The defining moment came on the game’s biggest stage&mdash;the All-Star Game&mdash;when Seattle catcher Cal Raleigh successfully challenged a call that was overturned to a strike, resulting in a strikeout of Manny Machado. It was the first time ABS directly altered the outcome of an MLB showcase, with each team allotted just two challenges (<a href="https://www.mlb.com/news/automatic-ball-strike-challenge-system-overturns-ball-call-2025-all-star-game" target="_blank" rel="noopener">MLB.com</a>). The reception remains mixed: in <em>The Athletic</em>’s anonymous player poll from May 2025, 63.4% of players opposed robo-umps calling balls and strikes, 17.1% supported them, and 19.4% were unsure (<a href="https://www.nytimes.com/athletic/6406613/2025/06/11/robo-umpires-mlb-2025-player-poll/" target="_blank" rel="noopener">The Athletic</a>).</p> 
+    <p>In 2025, Major League Baseball took its first major step toward the future with the <strong>Automated Ball-Strike (ABS) system</strong>. The defining moment came on the game’s biggest stage&mdash;the All-Star Game&mdash;when Seattle catcher Cal Raleigh successfully challenged a call that was overturned to a strike, resulting in a strikeout of Manny Machado. It was the first time ABS directly altered the outcome of an MLB showcase, with each team allotted just two challenges (<a href="https://www.mlb.com/news/automatic-ball-strike-challenge-system-overturns-ball-call-2025-all-star-game" target="_blank" rel="noopener">MLB.com</a>). The reception remains mixed: in <em>The Athletic</em>’s anonymous player poll from May 2025, 63.4% of players opposed robo-umps calling balls and strikes, 17.1% supported them, and 19.4% were unsure (<a href="https://www.nytimes.com/athletic/6406613/2025/06/11/robo-umpires-mlb-2025-player-poll/" target="_blank" rel="noopener">The Athletic</a>).</p>
 
-    <p>Despite that hesitation, rumors suggest a league-wide rollout of the challenge system is on track for 2026. If history tells us anything, technology rarely moves backward. Once refined and sped up, ABS may well redefine the fabric of the strike zone for all pitches in MLB.</p> 
+    <p>Despite that hesitation, rumors suggest a league-wide rollout of the challenge system is on track for 2026. If history tells us anything, technology rarely moves backward. Once refined and sped up, ABS may well redefine the fabric of the strike zone for all pitches in MLB.</p>
 
     <p>In this study, I simulate a counterfactual 2025 in which every taken pitch is adjudicated by ABS. For each pitch, I compare the ABS verdict with the call that actually occurred, compute a net “ABS benefit,” and identify the pitchers, hitters, and pitch types most helped or hurt by the standardized ABS zone. Through this research, we can begin to understand the trends and strategies that might be prevalent in baseball’s next era. The answers could reveal not just how the game is played, but who thrives and who struggles when the strike zone is standardized under the new definition.</p>
 
@@ -269,14 +126,14 @@
     <p>In this analysis, we compare two versions of the strike zone: the <strong>rulebook zone</strong> (or the "statcast zone"), which serves as the current ground truth, and the <strong>ABS zone</strong>, which represents the new ground truth under the automated system.</p>
 
     <div class="media">
-      <img
+      <img loading="lazy"
         src="https://github.com/shinorimax/Baseball_Research/blob/main/docs/figures/zone_comparison.png?raw=true"
         alt="Comparison of Rulebook vs. ABS Zone"
         width="400"
       />
       <em>Figure 1. Comparison of typical rulebook strike zone (blue) and the ABS strike zone (red) for a 6'3&quot; hitter.</em>
     </div>
-    
+
 
     <p>The <strong>rulebook zone</strong> is based on <strong>Baseball Savant’s Statcast data</strong>, which records per-pitch measurements such as <code>sz_top</code> and <code>sz_bot</code>—the top and bottom of a batter’s zone as determined during the game. Horizontally, the strike zone extends 0.85 feet to either side of home plate’s center. To capture the true geometry of the zone, we also account for the ball’s radius, rounding the four corners with quarter-circle arcs rather than using a sharp rectangle.</p>
 
@@ -291,14 +148,14 @@
     <h3>Confusion Matrices: ABS vs. Umpires and Rulebook Zone</h3>
 
     <div class="media">
-      <img src="https://github.com/shinorimax/Baseball_Research/blob/main/docs/figures/table1.png?raw=true" alt="Confusion matrices comparing Ump vs ABS and Rulebook vs ABS (all pitches)" />
+      <img loading="lazy" src="https://github.com/shinorimax/Baseball_Research/blob/main/docs/figures/table1.png?raw=true" alt="Confusion matrices comparing Ump vs ABS and Rulebook vs ABS (all pitches)" />
       <em>Table 1. Confusion matrices comparing Ump vs ABS and Rulebook vs ABS.</em>
     </div>
 
     <p>A confusion matrix summarizes how often two systems disagree on classification—in this case, whether a pitch is a strike or a ball—with columns representing the current system (umpire or rulebook) and rows representing the ABS “ground truth.” Looking across all pitches from March 27 to August 16, 2025, the ABS system appears notably hitter-friendly: it was much more likely to reclassify an umpire-called strike as a ball (16,836 cases) than to reclassify an umpire-called ball as a strike (8,536 cases). In other words, nearly twice as many umpire strikes were downgraded to balls by ABS as the reverse. This pattern is even starker relative to the rulebook zone, where a rulebook strike would be called a ball (10,804 cases) roughly three times as often as a rulebook ball would be called a strike (3,218 cases).</p>
 
     <div class="media">
-      <img src="https://github.com/shinorimax/Baseball_Research/blob/main/docs/figures/table2.png?raw=true" alt="Confusion matrices comparing Ump vs ABS by matchup type" />
+      <img loading="lazy" src="https://github.com/shinorimax/Baseball_Research/blob/main/docs/figures/table2.png?raw=true" alt="Confusion matrices comparing Ump vs ABS by matchup type" />
       <em>Table 2. Confusion matrices comparing Ump vs ABS by matchup type.</em>
     </div>
 
@@ -379,7 +236,7 @@
     <p>As <em>Figure 1</em> above shows, the ABS zone is <strong>vertically narrower</strong> than the current rulebook (Statcast) strike zone. This difference means that several pitches near the very top and bottom edges would be treated differently under ABS. In the following heatmaps, we highlight exactly where these discrepancies occur by comparing umpire calls and the rulebook zone to the ABS definition. Areas shaded green indicate pitches that ABS would call a ball but the former system (umps / rulebook) judged a strike, while red shows the reverse. This lets us see, location by location, how the shape of the zone changes the outcome of real pitches.</p>
 
     <div class="media">
-      <img src="https://github.com/shinorimax/Baseball_Research/blob/main/docs/figures/figure2.png?raw=true" alt="Figure 2. ABS-relative mistake type by location (signed density, zoomed)." />
+      <img loading="lazy" src="https://github.com/shinorimax/Baseball_Research/blob/main/docs/figures/figure2.png?raw=true" alt="Figure 2. ABS-relative mistake type by location (signed density, zoomed)." />
       <em>Figure 2. ABS-relative mistake type by location (signed density, zoomed).</em>
     </div>
 
@@ -404,19 +261,19 @@
     <p>To make these abstract differences more tangible, here are two examples: one pitch called a strike by the umpire and also by rulebook but a ball under ABS, and another where ABS would call a strike while the umpire / rulebook call ball. Both pitches will be judged differently under ABS due to the new definition of vertical width.</p>
 
     <div class="media">
-      <img src="https://github.com/shinorimax/Baseball_Research/blob/main/docs/figures/figure3.png?raw=true" alt="Figure 3. ABS-relative mistake type by location (by matchup)." />
+      <img loading="lazy" src="https://github.com/shinorimax/Baseball_Research/blob/main/docs/figures/figure3.png?raw=true" alt="Figure 3. ABS-relative mistake type by location (by matchup)." />
       <em>Figure 3. ABS-relative mistake type by location (by matchup).</em>
     </div>
 
     <p>The matchup-based heatmaps <em>Figure 3</em> reveal that in same-handed matchups (L vs L or R vs R), where pitchers traditionally attack the outside corner, many of those borderline corner pitches fall inside the ABS strike zone and are therefore more likely to be taken strikes. This suggests that pitchers with precise command to the outer edge may become even more effective under ABS. Another notable finding emerges in the left-handed batter vs right-handed pitcher matchup, where the outer-high corner sees a distinct cluster of pitches judged as strikes by ABS but not consistently called as such under the current system. This effect is much less pronounced in the other three matchup types, pointing to a potential asymmetry in how ABS could reshape pitcher–hitter dynamics depending on handedness.</p>
 
     <div class="media">
-      <img src="https://github.com/shinorimax/Baseball_Research/blob/main/docs/figures/figure4.png?raw=true" alt="Figure 4. ABS-relative mistake type by pitch type." />
+      <img loading="lazy" src="https://github.com/shinorimax/Baseball_Research/blob/main/docs/figures/figure4.png?raw=true" alt="Figure 4. ABS-relative mistake type by pitch type." />
       <em>Figure 4. ABS-relative mistake type by pitch type.</em>
     </div>
 
     <div class="media">
-      <img src="https://github.com/shinorimax/Baseball_Research/blob/main/docs/figures/figure5.png?raw=true" alt="Figure 5. ABS-relative mistake type by height bin." />
+      <img loading="lazy" src="https://github.com/shinorimax/Baseball_Research/blob/main/docs/figures/figure5.png?raw=true" alt="Figure 5. ABS-relative mistake type by height bin." />
       <em>Figure 5. ABS-relative mistake type by height bin.</em>
     </div>
 
@@ -427,36 +284,36 @@
     <p>Among hitters with at least 300 judged pitches, we identify the <strong>top and bottom 20 players who benefit or suffer most from ABS</strong> across two different measures. The first measure, <em>mean_abs_benefit_vs_ump</em>, is a <strong>per-pitch average</strong> of ABS benefit scores, where each pitch is scored +1 if ABS overturns a strike into a ball (hitter-friendly), −1 if ABS overturns a ball into a strike (pitcher-friendly), and 0 if there is agreement. The second measure, <em>sum_per_pa_abs_benefit_vs_ump</em>, normalizes the cumulative per-pitch benefit by the number of plate appearances, providing a <strong>per-PA perspective</strong> on how much the strike zone shifts outcomes for each hitter.</p>
 
     <div class="media">
-      <img src="https://github.com/shinorimax/Baseball_Research/blob/main/docs/figures/table3.png?raw=true" alt="Table 3. Top 20 hitters with ABS Benefit per judged pitch." />
+      <img loading="lazy" src="https://github.com/shinorimax/Baseball_Research/blob/main/docs/figures/table3.png?raw=true" alt="Table 3. Top 20 hitters with ABS Benefit per judged pitch." />
       <em>Table 3. Top 20 hitters with ABS Benefit per judged pitch.</em>
     </div>
 
     <div class="media">
-      <img src="https://github.com/shinorimax/Baseball_Research/blob/main/docs/figures/table4.png?raw=true" alt="Table 4. Bottom 20 hitters with ABS Benefit per judged pitch." />
+      <img loading="lazy" src="https://github.com/shinorimax/Baseball_Research/blob/main/docs/figures/table4.png?raw=true" alt="Table 4. Bottom 20 hitters with ABS Benefit per judged pitch." />
       <em>Table 4. Bottom 20 hitters with ABS Benefit per judged pitch.</em>
     </div>
 
     <p>The tables show that some hitters consistently gain more leniency from ABS than others. Interestingly, which side of the plate they stand appears to play a role: while <strong>16 of the top-20 most benefited hitters hit on the right side, only 2 of the bottom-20 most disadvantaged hitters do</strong>. This suggests that the static ABS zone may tilt toward right-handed hitters when compared to human umpire calls.</p>
 
     <div class="media">
-      <img src="https://github.com/shinorimax/Baseball_Research/blob/main/docs/figures/figure6.png?raw=true" alt="Figure 6. ABS Benefit by Batter Height and Handedness." />
+      <img loading="lazy" src="https://github.com/shinorimax/Baseball_Research/blob/main/docs/figures/figure6.png?raw=true" alt="Figure 6. ABS Benefit by Batter Height and Handedness." />
       <em>Figure 6. ABS Benefit by Batter Height and Handedness.</em>
     </div>
 
     <p><em>Figure 6</em> shows the relationship between hitter height and ABS benefit per pitch, with points colored by handedness. The plot suggests that right-handed hitters (red) generally gain more from ABS calls than left-handed hitters (blue), a difference confirmed by a two-sample t-test (t = –5.93, p = 7.92e–09). The regression lines further indicate that shorter hitters, regardless of handedness, tend to receive greater benefits under ABS, confirming the trend we saw in <em>Table 4</em>.</p>
 
     <div class="media">
-      <img src="https://github.com/shinorimax/Baseball_Research/blob/main/docs/figures/table5.png?raw=true" alt="Table 5. Top 20 pitchers with ABS Benefit per judged pitch." />
+      <img loading="lazy" src="https://github.com/shinorimax/Baseball_Research/blob/main/docs/figures/table5.png?raw=true" alt="Table 5. Top 20 pitchers with ABS Benefit per judged pitch." />
       <em>Table 5. Top 20 pitchers with ABS Benefit per judged pitch.</em>
     </div>
 
     <div class="media">
-      <img src="https://github.com/shinorimax/Baseball_Research/blob/main/docs/figures/table6.png?raw=true" alt="Table 6. Bottom 20 pitchers with ABS Benefit per judged pitch." />
+      <img loading="lazy" src="https://github.com/shinorimax/Baseball_Research/blob/main/docs/figures/table6.png?raw=true" alt="Table 6. Bottom 20 pitchers with ABS Benefit per judged pitch." />
       <em>Table 6. Bottom 20 pitchers with ABS Benefit per judged pitch.</em>
     </div>
 
     <div class="media">
-      <img src="https://github.com/shinorimax/Baseball_Research/blob/main/docs/figures/figure6.png?raw=true" alt="Figure 7. ABS Benefit by Pitcher Height and Handedness." />
+      <img loading="lazy" src="https://github.com/shinorimax/Baseball_Research/blob/main/docs/figures/figure6.png?raw=true" alt="Figure 7. ABS Benefit by Pitcher Height and Handedness." />
       <em>Figure 7. ABS Benefit by Pitcher Height and Handedness.</em>
     </div>
 
@@ -485,19 +342,17 @@
 
     <h3>References</h3>
     <ul>
-      <li><a href="https://baseballsavant.mlb.com/" target="_blank">Baseball Savant – Statcast Data Source</a></li>
-      <li><a href="https://blogs.fangraphs.com/maybe-theres-no-such-thing-as-a-perfectly-fair-strike-zone/" target="_blank">FanGraphs – Maybe There’s No Such Thing as a Perfectly Fair Strike Zone</a></li>
-      <li><a href="https://www.mlb.com/news/automatic-ball-strike-challenge-system-overturns-ball-call-2025-all-star-game" target="_blank">MLB.com – Automatic Ball-Strike Challenge System Overturns Ball Call (2025 All-Star Game)</a></li>
-      <li><a href="https://www.mlb.com/news/automated-ball-strike-calls-mlb-spring-games" target="_blank">MLB.com – Automated Ball-Strike Calls in MLB Spring Games</a></li>
-      <li><a href="https://www.nytimes.com/athletic/6406613/2025/06/11/robo-umpires-mlb-2025-player-poll/" target="_blank">The Athletic – Robo-Umpires MLB 2025 Player Poll</a></li>
-      <li><a href="https://umpscorecards.com/page/info/explainers/true-strike-zone" target="_blank">Ump Scorecards – Explainer: The True Strike Zone</a></li>
-      <li><a href="https://en.wikipedia.org/wiki/Automated_Ball-Strike_System" target="_blank">Wikipedia – Automated Ball-Strike System</a></li>
+      <li><a href="https://baseballsavant.mlb.com/" target="_blank" rel="noopener noreferrer">Baseball Savant – Statcast Data Source</a></li>
+      <li><a href="https://blogs.fangraphs.com/maybe-theres-no-such-thing-as-a-perfectly-fair-strike-zone/" target="_blank" rel="noopener noreferrer">FanGraphs – Maybe There’s No Such Thing as a Perfectly Fair Strike Zone</a></li>
+      <li><a href="https://www.mlb.com/news/automatic-ball-strike-challenge-system-overturns-ball-call-2025-all-star-game" target="_blank" rel="noopener noreferrer">MLB.com – Automatic Ball-Strike Challenge System Overturns Ball Call (2025 All-Star Game)</a></li>
+      <li><a href="https://www.mlb.com/news/automated-ball-strike-calls-mlb-spring-games" target="_blank" rel="noopener noreferrer">MLB.com – Automated Ball-Strike Calls in MLB Spring Games</a></li>
+      <li><a href="https://www.nytimes.com/athletic/6406613/2025/06/11/robo-umpires-mlb-2025-player-poll/" target="_blank" rel="noopener noreferrer">The Athletic – Robo-Umpires MLB 2025 Player Poll</a></li>
+      <li><a href="https://umpscorecards.com/page/info/explainers/true-strike-zone" target="_blank" rel="noopener noreferrer">Ump Scorecards – Explainer: The True Strike Zone</a></li>
+      <li><a href="https://en.wikipedia.org/wiki/Automated_Ball-Strike_System" target="_blank" rel="noopener noreferrer">Wikipedia – Automated Ball-Strike System</a></li>
     </ul>
     <!-- ARTICLE END -->
   </div>
 
-  <footer>
-    <p>&copy; 2026 Shinnosuke Yagi</p>
-  </footer>
+  </main><footer class="site-footer"><div class="wrap"><p>© 2026 Shinnosuke Yagi</p><div class="footer-links"><a href="https://github.com/shinorimax">GitHub ↗</a><a href="https://www.linkedin.com/in/shinnosuke-yagi-1a2914230/">LinkedIn ↗</a><a href="mailto:syagi2@stanford.edu">Email ↗</a></div><a href="#main">Back to top ↑</a></div></footer>
 </body>
 </html>
